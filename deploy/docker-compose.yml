@@ -16,10 +16,10 @@ services:
     image: mysql:8.0
     container_name: homecare-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_ROOT_PASSWORD: change_me_root_password
       MYSQL_DATABASE: homecare_platform
       MYSQL_USER: homecare
-      MYSQL_PASSWORD: homecare123456
+      MYSQL_PASSWORD: change_me_app_password
     ports:
       - "3306:3306"
     volumes:
@@ -66,7 +66,7 @@ services:
     environment:
       AUTH_DB_URL: jdbc:mysql://mysql:3306/homecare_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
       AUTH_DB_USERNAME: homecare
-      AUTH_DB_PASSWORD: homecare123456
+      AUTH_DB_PASSWORD: change_me_app_password
     depends_on:
       - mysql
       - redis

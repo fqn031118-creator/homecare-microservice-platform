@@ -7,5 +7,5 @@ spring:
   datasource:
     url: ${AUTH_DB_URL:jdbc:mysql://127.0.0.1:3306/homecare_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8}
     username: ${AUTH_DB_USERNAME:root}
-    password: ${AUTH_DB_PASSWORD:root123456}
+    password: ${AUTH_DB_PASSWORD:change_me_root_password}
     driver-class-name: com.mysql.cj.jdbc.Driver

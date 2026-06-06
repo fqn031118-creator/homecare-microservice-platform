@@ -54,7 +54,7 @@ sql/homecare_platform.sql
 ```bash
 AUTH_DB_URL=jdbc:mysql://127.0.0.1:3306/homecare_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
 AUTH_DB_USERNAME=root
-AUTH_DB_PASSWORD=root123456
+AUTH_DB_PASSWORD=change_me_root_password
 ```
 
 如果你使用项目里的 Docker Compose，`auth-service` 会自动连接到容器内的 `mysql` 服务。
