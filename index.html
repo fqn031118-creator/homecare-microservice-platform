@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智享到家 | 家政服务预约微服务平台</title>
+    <meta
+      name="description"
+      content="基于 Spring Cloud 微服务业务拆分设计的家政服务预约平台前端演示系统。"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=PingFang+SC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#005ea4",
+              "primary-container": "#0077ce",
+              "primary-fixed": "#d3e4ff",
+              "primary-fixed-dim": "#a2c9ff",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#fdfcff",
+              "on-primary-fixed": "#001c38",
+              "on-primary-fixed-variant": "#004881",
+              secondary: "#006e1c",
+              "secondary-container": "#98f994",
+              "secondary-fixed": "#98f994",
+              "secondary-fixed-dim": "#7ddc7a",
+              "on-secondary": "#ffffff",
+              "on-secondary-container": "#0c7521",
+              "on-secondary-fixed": "#002204",
+              "on-secondary-fixed-variant": "#005313",
+              tertiary: "#8f4a00",
+              "tertiary-container": "#b35e00",
+              "tertiary-fixed": "#ffdcc4",
+              "tertiary-fixed-dim": "#ffb780",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#fffbff",
+              "on-tertiary-fixed": "#2f1400",
+              "on-tertiary-fixed-variant": "#6f3800",
+              background: "#f8f9fb",
+              "on-background": "#191c1e",
+              surface: "#f8f9fb",
+              "surface-bright": "#f8f9fb",
+              "surface-dim": "#d8dadc",
+              "surface-tint": "#0060a8",
+              "surface-variant": "#e0e3e5",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-low": "#f2f4f6",
+              "surface-container": "#eceef0",
+              "surface-container-high": "#e6e8ea",
+              "surface-container-highest": "#e0e3e5",
+              "on-surface": "#191c1e",
+              "on-surface-variant": "#404752",
+              "inverse-surface": "#213145",
+              "inverse-on-surface": "#eaf1ff",
+              "inverse-primary": "#a2c9ff",
+              outline: "#707783",
+              "outline-variant": "#c0c7d4",
+              error: "#ba1a1a",
+              "error-container": "#ffdad6",
+              "on-error": "#ffffff",
+              "on-error-container": "#93000a"
+            },
+            spacing: {
+              base: "4px",
+              xs: "8px",
+              sm: "16px",
+              md: "24px",
+              lg: "48px",
+              xl: "80px",
+              gutter: "20px",
+              "margin-mobile": "16px",
+              "margin-desktop": "48px",
+              safe: "env(safe-area-inset-bottom)"
+            },
+            maxWidth: {
+              "container-max": "1200px"
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px"
+            },
+            fontFamily: {
+              sans: ["Inter", "PingFang SC", "Microsoft YaHei", "sans-serif"],
+              "headline-lg": ["Inter", "PingFang SC", "sans-serif"],
+              "headline-md": ["Inter", "PingFang SC", "sans-serif"],
+              "headline-sm": ["Inter", "PingFang SC", "sans-serif"],
+              "display-lg": ["Inter", "PingFang SC", "sans-serif"],
+              "body-md": ["Inter", "PingFang SC", "sans-serif"],
+              "body-lg": ["Inter", "PingFang SC", "sans-serif"],
+              "label-md": ["Inter", "PingFang SC", "sans-serif"],
+              "label-sm": ["Inter", "PingFang SC", "sans-serif"],
+              "code-sm": ["Inter", "monospace"]
+            },
+            fontSize: {
+              "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+              "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+              "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+              "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }],
+              "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "label-md": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+              "label-sm": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }],
+              "code-sm": ["13px", { lineHeight: "18px", fontWeight: "400" }]
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

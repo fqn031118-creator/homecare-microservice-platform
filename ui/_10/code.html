@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#0077ce",
+                    "tertiary-container": "#b35e00",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed-dim": "#7ddc7a",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-tertiary-fixed": "#2f1400",
+                    "surface-dim": "#d8dadc",
+                    "on-surface-variant": "#404752",
+                    "inverse-surface": "#2d3133",
+                    "outline-variant": "#c0c7d4",
+                    "surface-container-lowest": "#ffffff",
+                    "primary": "#005ea4",
+                    "tertiary-fixed": "#ffdcc4",
+                    "tertiary": "#8f4a00",
+                    "surface-container-high": "#e6e8ea",
+                    "on-secondary-fixed-variant": "#005313",
+                    "surface-variant": "#e0e3e5",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#0060a8",
+                    "surface": "#f8f9fb",
+                    "surface-container": "#eceef0",
+                    "on-background": "#191c1e",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#6f3800",
+                    "on-tertiary-container": "#fffbff",
+                    "primary-fixed": "#d3e4ff",
+                    "on-primary-container": "#fdfcff",
+                    "on-primary": "#ffffff",
+                    "on-surface": "#191c1e",
+                    "on-secondary-container": "#0c7521",
+                    "secondary-fixed": "#98f994",
+                    "outline": "#707783",
+                    "on-secondary-fixed": "#002204",
+                    "inverse-primary": "#a2c9ff",
+                    "error-container": "#ffdad6",
+                    "on-tertiary": "#ffffff",
+                    "background": "#f8f9fb",
+                    "on-primary-fixed": "#001c38",
+                    "primary-fixed-dim": "#a2c9ff",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f8f9fb",
+                    "on-primary-fixed-variant": "#004881",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary": "#006e1c",
+                    "secondary-container": "#98f994",
+                    "tertiary-fixed-dim": "#ffb780"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "20px",
+                    "lg": "48px",
+                    "sm": "16px",
+                    "container-max": "1200px",
+                    "base": "4px",
+                    "xl": "80px",
+                    "xs": "8px",
+                    "md": "24px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-active { color: var(--tw-color-primary); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md">
+<header class="bg-surface border-b border-outline-variant docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-primary">PristineHome</span>
+<nav class="hidden md:flex gap-md items-center h-full">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors h-full flex items-center" href="#">首页</a>
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 h-full flex items-center" href="#">订单</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors h-full flex items-center" href="#">服务</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full text-on-surface-variant">notifications</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-variant rounded-full text-on-surface-variant">help</button>
+<div class="w-8 h-8 rounded-full bg-primary-container overflow-hidden ml-2 border border-outline-variant">
+<img alt="用户头像" data-alt="A professional headshot of a person with a warm, friendly smile, set against a clean, soft-focus studio background. The lighting is bright and even, reflecting a modern corporate aesthetic with high clarity. The overall color palette is composed of soft neutrals, maintaining a sense of reliability and approachability within the PristineHome user ecosystem." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD3nLokhEjEAFrTPRFPdvsQQ7M83ZNdjzRmmYiI1llt0cQyQ1H4m-02mFgq2MOaBY961b2mIS3-RZhXU8f5u9d1ZmfswIHLaYLGltt9A7-twD5KVBXgxa3nbY96mgpsvqkE-gQMcT8wwdqlYuT21xGsyNEaACTHlKCjNCx4mC4zlD7H8JhAULqMpA69YKwKyPKqI0i1m9-m9pvNwM61KoDNnggpgNyrIxlHUXGgsl-NNaFwdluSiUG-l3cxpb6MQS12v9B1z6FisPU"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-lg pb-32">
+<!-- Order Identification -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<nav class="flex items-center gap-xs text-on-surface-variant mb-xs">
+<span class="font-label-sm text-label-sm">订单</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="font-label-sm text-label-sm">#PH-2024-8842</span>
+</nav>
+<h1 class="font-headline-lg text-headline-lg md:text-headline-lg">深度全屋消杀服务</h1>
+<p class="text-on-surface-variant font-body-md mt-xs">预约时间：10月25日 周五 • 上午 09:00</p>
+</div>
+<div class="flex gap-sm">
+<button class="px-md h-12 rounded-lg border border-outline text-primary font-label-md hover:bg-primary-fixed transition-colors">修改预约</button>
+<button class="px-md h-12 rounded-lg bg-primary text-on-primary font-label-md hover:opacity-90 transition-opacity">联系客服</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-md">
+<!-- Tracking Timeline (Bento Style) -->
+<div class="lg:col-span-8 space-y-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg shadow-sm">
+<h2 class="font-headline-md text-headline-md mb-lg">服务进度</h2>
+<div class="relative">
+<!-- Horizontal Progress Line -->
+<div class="absolute top-[20px] left-[20px] right-[20px] h-[2px] bg-surface-variant hidden md:block"></div>
+<!-- Vertical Progress Line -->
+<div class="absolute left-[20px] top-[20px] bottom-[20px] w-[2px] bg-surface-variant md:hidden"></div>
+<div class="flex flex-col md:flex-row justify-between relative gap-lg md:gap-0">
+<!-- Step 1: Pending Payment (Completed) -->
+<div class="flex md:flex-col items-start md:items-center gap-md md:gap-sm md:w-1/5 text-center group">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center z-10 shadow-sm border-4 border-surface">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill">check_circle</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-md text-label-md text-secondary">已支付</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">10-20 10:15</p>
+</div>
+</div>
+<!-- Step 2: Wait for Dispatch (Completed) -->
+<div class="flex md:flex-col items-start md:items-center gap-md md:gap-sm md:w-1/5 text-center">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center z-10 shadow-sm border-4 border-surface">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill">check_circle</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-md text-label-md text-secondary">待派单</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">10-20 10:30</p>
+</div>
+</div>
+<!-- Step 3: Staff Assigned (Completed) -->
+<div class="flex md:flex-col items-start md:items-center gap-md md:gap-sm md:w-1/5 text-center">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center z-10 shadow-sm border-4 border-surface">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill">check_circle</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-md text-label-md text-secondary">已派单</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">10-21 08:00</p>
+</div>
+</div>
+<!-- Step 4: In Service (Active) -->
+<div class="flex md:flex-col items-start md:items-center gap-md md:gap-sm md:w-1/5 text-center">
+<div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center z-10 shadow-sm border-4 border-surface animate-pulse">
+<span class="material-symbols-outlined text-[20px]">cleaning_services</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-md text-label-md text-primary font-bold">服务中</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">即将开始</p>
+</div>
+</div>
+<!-- Step 5: Completed (Upcoming) -->
+<div class="flex md:flex-col items-start md:items-center gap-md md:gap-sm md:w-1/5 text-center">
+<div class="w-10 h-10 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center z-10 border-4 border-surface">
+<span class="material-symbols-outlined text-[20px]">done_all</span>
+</div>
+<div class="text-left md:text-center">
+<p class="font-label-md text-label-md text-outline">已完工</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">—</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Personnel & Details Card -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-headline-md text-headline-md mb-md">派单人员</h3>
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 rounded-lg overflow-hidden border border-outline-variant">
+<img alt="服务提供者" data-alt="A detailed portrait of a professional service technician wearing a crisp, branded PristineHome polo shirt. The person has a confident and helpful demeanor, standing against a neutral, high-quality architectural interior background. The lighting is warm and natural, emphasizing trust and competence. The image captures a high-end corporate feel with refined textures and a clean, organized composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgW3O0bGmlQPpu6zpE_O-rqYCsC23LcCe7hoz7H_W3XwD-DKsoD-lZcrXFFKtnQeJt8m17bqpM_HPmKWLu6OFIKH7CRpZeP-_y9MKhugnm0z5uNNV8Lx4kpx9Jtmu4Y0JdWV9MMrMeoa2bgaD4ORUxDHV8GOAMweEXGyptuEd4Ea-rQIf4wHaV7TGicJpqmCRmzdMROTMBQ9OPzqcRPmY0ivskvVdbB0udqIzQthFAfEN_nLBeB_oNUZo8nzoPpvdQmBjsy0rX8hjY"/>
+</div>
+<div>
+<p class="font-headline-md text-headline-md">Marcus Thorne</p>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.9 (124 条评价)</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">高级消杀专家</p>
+</div>
+</div>
+<div class="mt-md pt-md border-t border-outline-variant flex gap-sm">
+<button class="flex-1 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">chat</span> 私聊
+                            </button>
+<button class="flex-1 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">call</span> 电话
+                            </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-headline-md text-headline-md mb-md">费用明细</h3>
+<div class="space-y-sm">
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-body-md">服务小计</span>
+<span class="font-label-md text-label-md">$180.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant font-body-md">服务费</span>
+<span class="font-label-md text-label-md">$15.00</span>
+</div>
+<div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+<span class="font-headline-md text-headline-md">实付总额</span>
+<span class="font-headline-md text-headline-md text-primary">$195.00</span>
+</div>
+<div class="flex items-center gap-xs text-secondary mt-2">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm">支付已验证</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Feedback & Review Section (Asymmetric Side Content) -->
+<div class="lg:col-span-4">
+<div class="bg-surface-container-high border border-outline-variant rounded-xl p-md md:p-lg sticky top-24 shadow-sm">
+<h2 class="font-headline-md text-headline-md mb-xs">撰写评价</h2>
+<p class="text-on-surface-variant font-label-md mb-md">您的反馈将帮助我们保持最高标准的服务质量。</p>
+<!-- Review placeholder state (Disabled until completion) -->
+<div class="opacity-60 cursor-not-allowed pointer-events-none transition-opacity duration-300" id="review-container">
+<div class="flex flex-col items-center mb-md">
+<div class="flex gap-xs mb-sm">
+<button class="material-symbols-outlined text-[32px] text-outline hover:text-tertiary transition-colors star-rating" data-rating="1">star</button>
+<button class="material-symbols-outlined text-[32px] text-outline hover:text-tertiary transition-colors star-rating" data-rating="2">star</button>
+<button class="material-symbols-outlined text-[32px] text-outline hover:text-tertiary transition-colors star-rating" data-rating="3">star</button>
+<button class="material-symbols-outlined text-[32px] text-outline hover:text-tertiary transition-colors star-rating" data-rating="4">star</button>
+<button class="material-symbols-outlined text-[32px] text-outline hover:text-tertiary transition-colors star-rating" data-rating="5">star</button>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant" id="rating-text">为您的体验打分</p>
+</div>
+<div class="space-y-sm">
+<label class="block font-label-md text-label-md text-on-surface-variant">评价内容</label>
+<textarea class="w-full h-32 p-sm rounded-lg bg-surface border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-outline font-body-md" placeholder="请评价 Marcus 的服务..."></textarea>
+</div>
+<button class="w-full mt-md bg-primary text-on-primary py-3 rounded-lg font-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-sm">
+                            提交评价
+                        </button>
+</div>
+<!-- Notice until service completed -->
+<div class="mt-md p-sm bg-surface-container-low border border-outline-variant rounded-lg flex gap-sm items-start" id="service-notice">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">
+                            评价和评分功能将在服务状态更新为 <span class="font-bold">已完工</span> 后开放。
+                        </p>
+</div>
+<div class="mt-lg pt-lg border-t border-outline-variant text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-md">想要开启评价功能进行测试？</p>
+<button class="text-primary font-label-md hover:underline" onclick="toggleCompletion()">模拟服务完工</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar from JSON -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 h-16 pb-safe bg-surface border-t border-outline-variant shadow-md z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-label-sm text-label-sm">订单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-sm text-label-sm">任务</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">个人中心</span>
+</a>
+</nav>
+<script>
+        function toggleCompletion() {
+            const container = document.getElementById('review-container');
+            const notice = document.getElementById('service-notice');
+            
+            container.classList.remove('opacity-60', 'cursor-not-allowed', 'pointer-events-none');
+            notice.innerHTML = `<span class="material-symbols-outlined text-secondary">check_circle</span>
+                                <p class="font-label-sm text-label-sm text-on-secondary-container">服务已完工！您现在可以为 Marcus 评价了。</p>`;
+            notice.classList.remove('bg-surface-container-low');
+            notice.classList.add('bg-secondary-container');
+        }
+
+        // Rating Stars Logic
+        const stars = document.querySelectorAll('.star-rating');
+        const ratingText = document.getElementById('rating-text');
+        const ratingLabels = ['非常差', '较差', '一般', '很好', '非常棒！'];
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                stars.forEach((s, i) => {
+                    if (i <= index) {
+                        s.style.fontVariationSettings = "'FILL' 1";
+                        s.classList.add('text-tertiary');
+                        s.classList.remove('text-outline');
+                    } else {
+                        s.style.fontVariationSettings = "'FILL' 0";
+                        s.classList.remove('text-tertiary');
+                        s.classList.add('text-outline');
+                    }
+                });
+                ratingText.textContent = ratingLabels[index];
+                ratingText.classList.add('text-tertiary', 'font-bold');
+            });
+
+            star.addEventListener('mouseover', () => {
+                if (!document.getElementById('review-container').classList.contains('pointer-events-none')) {
+                    stars.forEach((s, i) => {
+                        if (i <= index) s.classList.add('scale-110');
+                    });
+                }
+            });
+
+            star.addEventListener('mouseout', () => {
+                stars.forEach(s => s.classList.remove('scale-110'));
+            });
+        });
+    </script>
+</body></html>

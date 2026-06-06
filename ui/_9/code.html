@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PristineHome | 管理后台</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#0077ce",
+                        "tertiary-container": "#b35e00",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#7ddc7a",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary-fixed": "#2f1400",
+                        "surface-dim": "#d8dadc",
+                        "on-surface-variant": "#404752",
+                        "inverse-surface": "#2d3133",
+                        "outline-variant": "#c0c7d4",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#005ea4",
+                        "tertiary-fixed": "#ffdcc4",
+                        "tertiary": "#8f4a00",
+                        "surface-container-high": "#e6e8ea",
+                        "on-secondary-fixed-variant": "#005313",
+                        "surface-variant": "#e0e3e5",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#0060a8",
+                        "surface": "#f8f9fb",
+                        "surface-container": "#eceef0",
+                        "on-background": "#191c1e",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#6f3800",
+                        "on-tertiary-container": "#fffbff",
+                        "primary-fixed": "#d3e4ff",
+                        "on-primary-container": "#fdfcff",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#0c7521",
+                        "secondary-fixed": "#98f994",
+                        "outline": "#707783",
+                        "on-secondary-fixed": "#002204",
+                        "inverse-primary": "#a2c9ff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f8f9fb",
+                        "on-primary-fixed": "#001c38",
+                        "primary-fixed-dim": "#a2c9ff",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f8f9fb",
+                        "on-primary-fixed-variant": "#004881",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#006e1c",
+                        "secondary-container": "#98f994",
+                        "tertiary-fixed-dim": "#ffb780"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "20px",
+                        "lg": "48px",
+                        "sm": "16px",
+                        "container-max": "1200px",
+                        "base": "4px",
+                        "xl": "80px",
+                        "xs": "8px",
+                        "md": "24px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fb; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .sidebar-active { background-color: #0077ce; color: #fdfcff; border-radius: 0.5rem; }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c0c7d4; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen w-64 bg-surface-container-low border-r border-outline-variant py-md px-sm gap-xs flex-shrink-0 sticky top-0">
+<div class="px-sm mb-lg">
+<h1 class="text-headline-md font-headline-md font-black text-primary">PristineHome</h1>
+<p class="text-label-md font-label-md text-on-surface-variant mt-1">管理后台</p>
+</div>
+<div class="flex items-center gap-sm px-sm py-xs mb-md">
+<img alt="管理员头像" class="w-10 h-10 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzhZBzufGRm9bKO6v88-8cPfuWv7rurdROWX_wkdVMu_eRLxxe6fYZonuyLcWSLPq5otYgHCmt_1wnx9l6NU2dM9ibx8NU02TdIfaF_ZH-KZQ6-ilnWbVx_uN5APhYWKZoBs8hCHn143u-35doFOQ87C1xrn1cxqc02pNYyWaJeW46KToOjdkGO9FJykvbcibm_OMa5QVbOq9MGISirAjWO3j5HB-tLKlqmrSP1h_tkcirFIu4GHh75gza_OjFwxaNm6mXZs3a9jQ9"/>
+<div>
+<p class="text-label-md font-bold text-on-surface">Alex Thompson</p>
+<p class="text-label-sm text-on-surface-variant">系统管理部</p>
+</div>
+</div>
+<nav class="flex flex-col gap-xs flex-grow">
+<a class="flex items-center gap-sm px-sm py-md bg-primary-container text-on-primary-container rounded-lg scale-95 active:scale-90 transition-all duration-200 cursor-pointer" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md font-label-md">控制面板</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="text-label-md font-label-md">服务项目</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-label-md font-label-md">人员管理</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-label-md font-label-md">订单管理</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all cursor-pointer" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-label-md font-label-md">数据分析</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-xs">
+<button class="flex items-center gap-sm px-sm py-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-md font-label-md">系统设置</span>
+</button>
+<button class="flex items-center gap-sm px-sm py-md text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all cursor-pointer">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-label-md font-label-md">退出登录</span>
+</button>
+</div>
+</aside>
+<main class="flex-grow flex flex-col min-w-0">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant h-16 flex justify-between items-center w-full px-gutter z-10">
+<div class="flex items-center gap-md">
+<span class="md:hidden material-symbols-outlined text-primary cursor-pointer">menu</span>
+<h2 class="font-headline-md text-headline-md font-bold text-on-background">全局业务管理</h2>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden sm:flex items-center bg-surface-container-low rounded-full px-md py-1 border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-md w-48 lg:w-64" placeholder="搜索订单、人员..." type="text"/>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:text-primary-container transition-colors">notifications</span>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:text-primary-container transition-colors">help</span>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<div class="p-md lg:p-lg space-y-md">
+<!-- Real-time Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+<div class="bg-surface border border-outline-variant p-md rounded-lg flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="text-label-sm font-bold uppercase text-on-surface-variant tracking-wider">待处理订单</span>
+<span class="material-symbols-outlined text-tertiary">pending_actions</span>
+</div>
+<div class="mt-md">
+<h3 class="text-headline-lg font-headline-lg text-on-background">42</h3>
+<p class="text-label-sm text-secondary flex items-center mt-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 较上小时增长 12%
+                        </p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-md rounded-lg flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="text-label-sm font-bold uppercase text-on-surface-variant tracking-wider">在岗人员</span>
+<span class="material-symbols-outlined text-primary">person_check</span>
+</div>
+<div class="mt-md">
+<h3 class="text-headline-lg font-headline-lg text-on-background">158</h3>
+<p class="text-label-sm text-on-surface-variant mt-1">89% 利用率</p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-md rounded-lg flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="text-label-sm font-bold uppercase text-on-surface-variant tracking-wider">今日营收</span>
+<span class="material-symbols-outlined text-secondary">payments</span>
+</div>
+<div class="mt-md">
+<h3 class="text-headline-lg font-headline-lg text-on-background">¥14,280</h3>
+<p class="text-label-sm text-secondary flex items-center mt-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 高于目标 8%
+                        </p>
+</div>
+</div>
+<div class="bg-surface border border-outline-variant p-md rounded-lg flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<span class="text-label-sm font-bold uppercase text-on-surface-variant tracking-wider">平均评分</span>
+<span class="material-symbols-outlined text-tertiary">star</span>
+</div>
+<div class="mt-md">
+<h3 class="text-headline-lg font-headline-lg text-on-background">4.85</h3>
+<p class="text-label-sm text-on-surface-variant mt-1">基于 2.4k 条评论</p>
+</div>
+</div>
+</div>
+<!-- Global Operations Map & Dispatch -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
+<!-- Interactive Map Section -->
+<div class="lg:col-span-2 bg-surface border border-outline-variant rounded-lg overflow-hidden flex flex-col h-[500px]">
+<div class="p-md border-b border-outline-variant flex justify-between items-center bg-white">
+<h4 class="font-headline-md text-headline-md text-on-background">实时服务热力图</h4>
+<div class="flex gap-xs">
+<span class="px-sm py-1 bg-primary-fixed text-on-primary-fixed text-label-sm rounded-full">所有区域</span>
+<span class="px-sm py-1 bg-surface-container-high text-on-surface-variant text-label-sm rounded-full cursor-pointer">A 区</span>
+</div>
+</div>
+<div class="relative flex-grow bg-surface-container">
+<img alt="业务地图" class="w-full h-full object-cover opacity-60 grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9Juu488QjtXhEicvxH7uLyKvn1_6p2FUPTK9HwHp1WHkawly0Ko1pZJvysIsFS3O9GdTijhOMYOx2Y10LSNn3Y8NOZyYNDYFubEZSOSJpNWlP-Kt2angvsoLm9TRp8WPZeNobQtI5gbuPRE-fyqvDUr49jJkqmGiRnh72EeGSZJmPu2GhHYlR0uBPFGo711K37SZ2H_OJQ2vx65WRmAaq9rT5KtySU0zy7WRQytxEib_51fXDzAh0_Ce5dDNpWPnoAAoIjxFMqmNq"/>
+<!-- Map HUD Elements -->
+<div class="absolute top-sm left-sm flex flex-col gap-xs">
+<div class="bg-white/90 backdrop-blur p-xs rounded-lg shadow-sm border border-outline-variant flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-primary animate-pulse"></div>
+<span class="text-label-sm font-bold">12 项活跃清洁中</span>
+</div>
+<div class="bg-white/90 backdrop-blur p-xs rounded-lg shadow-sm border border-outline-variant flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<span class="text-label-sm font-bold">5 项紧急请求</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Manual Dispatch List -->
+<div class="bg-surface border border-outline-variant rounded-lg flex flex-col h-[500px]">
+<div class="p-md border-b border-outline-variant">
+<h4 class="font-headline-md text-headline-md text-on-background">人工调派</h4>
+<p class="text-label-sm text-on-surface-variant">优先处理未分配任务</p>
+</div>
+<div class="flex-grow overflow-y-auto custom-scrollbar p-sm space-y-sm">
+<!-- Dispatch Item -->
+<div class="p-sm bg-surface-container-low rounded-lg border border-transparent hover:border-primary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-bold text-primary">ORD-8821</span>
+<span class="text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-xs rounded">高优先级</span>
+</div>
+<h5 class="text-label-md font-bold text-on-surface">厨房深度清洁</h5>
+<p class="text-label-sm text-on-surface-variant">曼哈顿，东42街</p>
+<div class="mt-sm flex justify-between items-center">
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 45分钟前
+                                </span>
+<button class="bg-primary text-on-primary text-label-sm px-md py-1 rounded-full font-bold active:scale-95 transition-transform">派单</button>
+</div>
+</div>
+<div class="p-sm bg-surface-container-low rounded-lg border border-transparent hover:border-primary transition-all cursor-pointer">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-bold text-primary">ORD-8824</span>
+<span class="text-label-sm bg-surface-container-highest text-on-surface-variant px-xs rounded">普通</span>
+</div>
+<h5 class="text-label-md font-bold text-on-surface">标准公寓预清洁</h5>
+<p class="text-label-sm text-on-surface-variant">布鲁克林，第五大道</p>
+<div class="mt-sm flex justify-between items-center">
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 1.2小时前
+                                </span>
+<button class="bg-primary text-on-primary text-label-sm px-md py-1 rounded-full font-bold active:scale-95 transition-transform">派单</button>
+</div>
+</div>
+<div class="p-sm bg-surface-container-low rounded-lg border border-transparent hover:border-primary transition-all cursor-pointer opacity-80">
+<div class="flex justify-between items-start mb-xs">
+<span class="text-label-sm font-bold text-primary">ORD-8819</span>
+<span class="text-label-sm bg-secondary-container text-on-secondary-container px-xs rounded">定期</span>
+</div>
+<h5 class="text-label-md font-bold text-on-surface">全窗清洗 (整套)</h5>
+<p class="text-label-sm text-on-surface-variant">皇后区，阿斯托利亚大道</p>
+<div class="mt-sm flex justify-between items-center">
+<span class="text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 2小时前
+                                </span>
+<button class="bg-primary text-on-primary text-label-sm px-md py-1 rounded-full font-bold active:scale-95 transition-transform">派单</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Personnel Tracking & Service Analytics -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+<!-- Availability Tracking -->
+<div class="bg-surface border border-outline-variant rounded-lg p-md">
+<div class="flex justify-between items-center mb-md">
+<h4 class="font-headline-md text-headline-md text-on-background">人员在岗状态</h4>
+<button class="text-primary text-label-md font-bold flex items-center gap-1">
+                            管理全部 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="space-y-md">
+<div class="flex items-center gap-md">
+<img class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSIQtK4XyINDasSyIZ80_j28CLi3vBPr7q6JUoELBHzcOcLGP1r9VbX4XYxnxoCDVfTmWGMMoEc1tcTEGVKALUyiZQHjLrftFpaqt0v2JrT3pcvL-mh-2GyAnQqrKmiJO2mMcSYmLo51cjX-PHnKCJvsJlDlFcEdV47yfdvml93FlVD7qRb2EOdmYIz04vYslmEG215alLgJr-bvcGtV5AnHoyHfrYG95Js38HzFowwGV9FX5iYVAc4Shj-B_dNUTs4iq9t8is8IQ8"/>
+<div class="flex-grow">
+<div class="flex justify-between">
+<span class="text-label-md font-bold">Sarah Jenkins</span>
+<span class="text-label-sm text-secondary font-bold">任务中 (ORD-8812)</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full mt-1">
+<div class="bg-secondary h-2 rounded-full w-[75%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<img class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwZuvpRogwbjN1XBKrSaYhxioZJoz7VdUDv8RnKVewUyz7DrL3I8SFaOhUlHDVeagAFEWHhFHHzY8uNbyzBT2MaXC2sRraBwAP66edSgd07KndpnLnRVVp1y-YQvmKHNaZiamqZREo-xK3g3U6eUdojaz3MdUYkxUnQ-EHIoA5aVhFxf27_UYx3Sl_QMaSycuV56E9F-70PpACduJ3zbBo6_0tvRce0Qh5jksofj63rTc3LNphLL_FFKMEzmMv8ZPebjVnM-BIyHcv"/>
+<div class="flex-grow">
+<div class="flex justify-between">
+<span class="text-label-md font-bold">Michael Chen</span>
+<span class="text-label-sm text-primary font-bold">空闲</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full mt-1">
+<div class="bg-primary h-2 rounded-full w-0"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<img class="w-12 h-12 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiv0-7_oTCLM5xTbAgA-ZSBPvqMu8c8NNpRf4nuN0-7rt7ia-7AKSpVyYpAN7KxUErjr4ib1htZg1usucvUA_SI-V9BeNPElpGTO6BJb4aaq-t4TlktoTzBlhZbBhIdM_RoDStoszT_UXR7jS6wITOl4kuLzccS-1Btv-tcVN1MC2DrATtaucynDJ0YtEundOYL0_KwwYN6YBq2SE5Rk41dlNmnGJqYy2Jl4gl5r1U7zQzn0tRk-FRYnbuBp4KF2XErYRH068SuGA-"/>
+<div class="flex-grow">
+<div class="flex justify-between">
+<span class="text-label-md font-bold">Elena Rodriguez</span>
+<span class="text-label-sm text-tertiary font-bold">前往途中</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full mt-1">
+<div class="bg-tertiary h-2 rounded-full w-[40%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Business Analytics Mini-Chart -->
+<div class="bg-surface border border-outline-variant rounded-lg p-md">
+<div class="flex justify-between items-center mb-md">
+<h4 class="font-headline-md text-headline-md text-on-background">每周业绩趋势</h4>
+<select class="bg-surface-container-low border-none rounded-lg text-label-sm focus:ring-primary">
+<option>过去 7 天</option>
+<option>过去 30 天</option>
+</select>
+</div>
+<div class="h-40 flex items-end justify-between gap-sm px-sm">
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[40%] relative group">
+<div class="absolute -top-xs left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-on-background text-white text-[10px] px-1 rounded">周一</div>
+</div>
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[55%] relative group"></div>
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[70%] relative group"></div>
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[65%] relative group"></div>
+<div class="w-full bg-primary rounded-t-sm h-[90%] relative group">
+<div class="absolute -top-md left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] px-1 rounded">峰值</div>
+</div>
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[45%] relative group"></div>
+<div class="w-full bg-primary-fixed-dim rounded-t-sm h-[50%] relative group"></div>
+</div>
+<div class="mt-md pt-md border-t border-outline-variant grid grid-cols-2 gap-md">
+<div>
+<p class="text-label-sm text-on-surface-variant">已完成</p>
+<p class="text-headline-md font-bold">1,204</p>
+</div>
+<div>
+<p class="text-label-sm text-on-surface-variant">已取消</p>
+<p class="text-headline-md font-bold text-error">12</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Visible on Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface dark:bg-inverse-surface border-t border-outline-variant shadow-md flex justify-around items-center px-4 h-16 pb-safe z-50">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-sm font-label-sm">主页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-label-sm font-label-sm">订单</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-label-sm font-label-sm">任务</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-sm font-label-sm">个人中心</span>
+</a>
+</nav>
+<script>
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const ripple = document.createElement('div');
+                ripple.classList.add('absolute', 'bg-white/20', 'rounded-full', 'animate-ping');
+                ripple.style.width = '20px';
+                ripple.style.height = '20px';
+                ripple.style.left = e.clientX + 'px';
+                ripple.style.top = e.clientY + 'px';
+            });
+        });
+    </script>
+</body></html>

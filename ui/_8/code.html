@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HomeCare Pro | 系统健康看板</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#00714d",
+                    "outline-variant": "#c3c6d7",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-tint": "#0053db",
+                    "on-background": "#0b1c30",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "tertiary": "#784b00",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#0b1c30",
+                    "inverse-on-surface": "#eaf1ff",
+                    "inverse-primary": "#b4c5ff",
+                    "surface-container": "#e5eeff",
+                    "on-secondary-fixed": "#002113",
+                    "on-secondary-fixed-variant": "#005236",
+                    "primary": "#004ac6",
+                    "surface-variant": "#d3e4fe",
+                    "secondary-container": "#6cf8bb",
+                    "secondary-fixed": "#6ffbbe",
+                    "on-surface-variant": "#434655",
+                    "surface-container-low": "#eff4ff",
+                    "primary-container": "#2563eb",
+                    "secondary": "#006c49",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#d3e4fe",
+                    "on-primary-fixed": "#00174b",
+                    "surface-bright": "#f8f9ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "outline": "#737686",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#dbe1ff",
+                    "inverse-surface": "#213145",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "background": "#f8f9ff",
+                    "on-primary-container": "#eeefff",
+                    "tertiary-container": "#996100",
+                    "on-tertiary-container": "#ffeedd",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container-high": "#dce9ff",
+                    "surface-dim": "#cbdbf5",
+                    "surface": "#f8f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "16px",
+                    "base": "4px",
+                    "margin-mobile": "16px",
+                    "xl": "64px",
+                    "md": "24px",
+                    "gutter": "24px",
+                    "xs": "8px",
+                    "lg": "40px",
+                    "margin-desktop": "48px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "code-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #434655; border-radius: 10px; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+        .animate-pulse-dot { animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .terminal-text { text-shadow: 0 0 5px rgba(111, 251, 190, 0.3); }
+    </style>
+</head>
+<body class="bg-surface dark:bg-inverse-surface min-h-screen text-on-surface dark:text-inverse-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-md bg-surface-container-low dark:bg-inverse-surface border-r border-outline-variant w-64 z-50 hidden md:flex">
+<div class="mb-lg">
+<h1 class="text-headline-sm font-headline-sm font-black text-on-surface dark:text-inverse-on-surface">控制台</h1>
+<p class="text-label-md font-label-md text-outline">管理员模式</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-on-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-md font-label-md">仪表盘</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-on-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-label-md font-label-md">排班计划</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-on-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="text-label-md font-label-md">营收统计</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-on-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-label-md font-label-md">库存管理</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-variant dark:hover:bg-on-surface-variant transition-all rounded-xl" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-label-md font-label-md">客户列表</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container dark:bg-on-secondary-container text-on-secondary-container dark:text-secondary-container rounded-xl font-bold scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-label-md font-label-md">系统健康</span>
+</a>
+</nav>
+<div class="mt-auto space-y-4">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl text-label-md font-bold hover:opacity-90 transition-opacity">
+                新增服务请求
+            </button>
+<div class="pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-label-md">帮助中心</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant dark:text-outline-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-label-md">退出登录</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="md:ml-64 p-margin-mobile md:p-margin-desktop pb-32 md:pb-margin-desktop">
+<!-- Header -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-4">
+<div>
+<h2 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">基础架构运行状态</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">Spring Cloud 微服务集群实时可视化监控。</p>
+</div>
+<div class="flex items-center gap-sm bg-surface-container p-base rounded-full pr-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">query_stats</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-md font-bold">系统状态</span>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed animate-pulse-dot"></span>
+<span class="text-on-secondary-fixed-variant text-[12px] font-bold">所有服务在线</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Metrics Overview (Admin Metric Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-lg">
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant p-md rounded-xl shadow-sm">
+<p class="text-label-md text-outline-variant mb-base">请求总量</p>
+<div class="flex justify-between items-end">
+<h3 class="text-headline-lg font-headline-lg text-primary">1.2M</h3>
+<span class="text-secondary flex items-center text-[12px] font-bold mb-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12%
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant p-md rounded-xl shadow-sm">
+<p class="text-label-md text-outline-variant mb-base">平均延迟</p>
+<div class="flex justify-between items-end">
+<h3 class="text-headline-lg font-headline-lg text-primary">42ms</h3>
+<span class="text-secondary flex items-center text-[12px] font-bold mb-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> 4ms
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant p-md rounded-xl shadow-sm">
+<p class="text-label-md text-outline-variant mb-base">错误率</p>
+<div class="flex justify-between items-end">
+<h3 class="text-headline-lg font-headline-lg text-primary">0.02%</h3>
+<span class="text-outline-variant flex items-center text-[12px] font-bold mb-1">
+                        运行稳定
+                    </span>
+</div>
+</div>
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant p-md rounded-xl shadow-sm">
+<p class="text-label-md text-outline-variant mb-base">活跃节点</p>
+<div class="flex justify-between items-end">
+<h3 class="text-headline-lg font-headline-lg text-primary">24</h3>
+<span class="text-secondary flex items-center text-[12px] font-bold mb-1">
+                        扩容 +2
+                    </span>
+</div>
+</div>
+</div>
+<!-- Microservices Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-gutter">
+<!-- Service Card: API Gateway -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:border-primary transition-all group">
+<div class="p-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">router</span>
+<h4 class="text-headline-sm font-headline-sm font-bold">API 网关</h4>
+</div>
+<p class="text-label-md text-on-surface-variant">Gateway: 路由编排与负载均衡</p>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse-dot"></span> 在线
+                    </span>
+</div>
+<div class="px-md grid grid-cols-3 gap-2 mb-md">
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">CPU</p>
+<p class="text-body-md font-bold text-primary">12%</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">延迟</p>
+<p class="text-body-md font-bold text-primary">8ms</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">TPS</p>
+<p class="text-body-md font-bold text-primary">450</p>
+</div>
+</div>
+<div class="bg-[#0b1c30] p-3 font-mono text-[11px] leading-relaxed custom-scrollbar h-24 overflow-y-auto">
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 路由请求: /v1/orders -&gt; order-service</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 用户 user_4920 鉴权通过</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 负载均衡: 已选择节点 node-2:9092</div>
+<div class="terminal-text text-outline-variant">[调试] GC 回收耗时 12ms</div>
+</div>
+</div>
+<!-- Service Card: Auth Service -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:border-primary transition-all group">
+<div class="p-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">key</span>
+<h4 class="text-headline-sm font-headline-sm font-bold">认证服务</h4>
+</div>
+<p class="text-label-md text-on-surface-variant">IAM: 令牌签发、校验与 MFA 逻辑</p>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse-dot"></span> 在线
+                    </span>
+</div>
+<div class="px-md grid grid-cols-3 gap-2 mb-md">
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">CPU</p>
+<p class="text-body-md font-bold text-primary">45%</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">延迟</p>
+<p class="text-body-md font-bold text-primary">112ms</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">TPS</p>
+<p class="text-body-md font-bold text-primary">85</p>
+</div>
+</div>
+<div class="bg-[#0b1c30] p-3 font-mono text-[11px] leading-relaxed custom-scrollbar h-24 overflow-y-auto">
+<div class="terminal-text text-secondary-fixed mb-1">[信息] JWT 已签发: user_session_f92k...</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 刷新令牌验证通过</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] LDAP 同步完成: 0 项变更</div>
+<div class="terminal-text text-outline-variant">[调试] Redis 缓存命中 session_id</div>
+</div>
+</div>
+<!-- Service Card: Order Service -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:border-primary transition-all group">
+<div class="p-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">receipt_long</span>
+<h4 class="text-headline-sm font-headline-sm font-bold">订单服务</h4>
+</div>
+<p class="text-label-md text-on-surface-variant">Core: 管理服务生命周期与预订</p>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse-dot"></span> 在线
+                    </span>
+</div>
+<div class="px-md grid grid-cols-3 gap-2 mb-md">
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">CPU</p>
+<p class="text-body-md font-bold text-primary">28%</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">延迟</p>
+<p class="text-body-md font-bold text-primary">64ms</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">TPS</p>
+<p class="text-body-md font-bold text-primary">120</p>
+</div>
+</div>
+<div class="bg-[#0b1c30] p-3 font-mono text-[11px] leading-relaxed custom-scrollbar h-24 overflow-y-auto">
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 订单已创建: ORD-49203</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 发布事件: order.created</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 事务已提交</div>
+<div class="terminal-text text-outline-variant">[调试] 数据库连接池: 8/20</div>
+</div>
+</div>
+<!-- Service Card: Payment Service -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:border-primary transition-all group">
+<div class="p-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">credit_card</span>
+<h4 class="text-headline-sm font-headline-sm font-bold">支付服务</h4>
+</div>
+<p class="text-label-md text-on-surface-variant">FinOps: 处理交易与款项结算</p>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse-dot"></span> 在线
+                    </span>
+</div>
+<div class="px-md grid grid-cols-3 gap-2 mb-md">
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">CPU</p>
+<p class="text-body-md font-bold text-primary">19%</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">延迟</p>
+<p class="text-body-md font-bold text-primary">420ms</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">TPS</p>
+<p class="text-body-md font-bold text-primary">12</p>
+</div>
+</div>
+<div class="bg-[#0b1c30] p-3 font-mono text-[11px] leading-relaxed custom-scrollbar h-24 overflow-y-auto">
+<div class="terminal-text text-secondary-fixed mb-1">[信息] Stripe API: 收到 Webhook</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 支付成功: TXN_88291</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 已生成账单: ORD-49203</div>
+<div class="terminal-text text-outline-variant">[调试] 幂等键校验通过</div>
+</div>
+</div>
+<!-- Service Card: Provider Service -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:border-primary transition-all group">
+<div class="p-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">badge</span>
+<h4 class="text-headline-sm font-headline-sm font-bold">服务商服务</h4>
+</div>
+<p class="text-label-md text-on-surface-variant">Resources: 人员可用性与排班</p>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse-dot"></span> 在线
+                    </span>
+</div>
+<div class="px-md grid grid-cols-3 gap-2 mb-md">
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">CPU</p>
+<p class="text-body-md font-bold text-primary">31%</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">延迟</p>
+<p class="text-body-md font-bold text-primary">34ms</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">TPS</p>
+<p class="text-body-md font-bold text-primary">210</p>
+</div>
+</div>
+<div class="bg-[#0b1c30] p-3 font-mono text-[11px] leading-relaxed custom-scrollbar h-24 overflow-y-auto">
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 正在计算邮编 10001 的服务半径</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 时段已确认: Provider_ID_92</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 匹配到 14 名符合条件的服务商</div>
+<div class="terminal-text text-outline-variant">[调试] GeoHash 查询耗时: 0.2ms</div>
+</div>
+</div>
+<!-- Service Card: Stats Service -->
+<div class="bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant rounded-xl overflow-hidden hover:shadow-lg hover:border-primary transition-all group">
+<div class="p-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<h4 class="text-headline-sm font-headline-sm font-bold">统计服务</h4>
+</div>
+<p class="text-label-md text-on-surface-variant">Analytics: 数据聚合与报表分析</p>
+</div>
+<span class="bg-secondary-container/20 text-on-secondary-container px-3 py-1 rounded-full text-[12px] font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-pulse-dot"></span> 在线
+                    </span>
+</div>
+<div class="px-md grid grid-cols-3 gap-2 mb-md">
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">CPU</p>
+<p class="text-body-md font-bold text-primary">58%</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">延迟</p>
+<p class="text-body-md font-bold text-primary">150ms</p>
+</div>
+<div class="bg-surface p-2 rounded-lg text-center border border-outline-variant/30">
+<p class="text-[10px] text-outline font-bold uppercase tracking-widest">TPS</p>
+<p class="text-body-md font-bold text-primary">40</p>
+</div>
+</div>
+<div class="bg-[#0b1c30] p-3 font-mono text-[11px] leading-relaxed custom-scrollbar h-24 overflow-y-auto">
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 正在汇总日收入统计数据</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 缓存预热: hourly_metrics</div>
+<div class="terminal-text text-secondary-fixed mb-1">[信息] 报表已生成: infrastructure_01.pdf</div>
+<div class="terminal-text text-outline-variant">[调试] 批处理规模: 1000 条记录</div>
+</div>
+</div>
+</div>
+<!-- Infrastructure Visual (Placeholder/Illustration) -->
+<section class="mt-lg">
+<div class="bg-surface-container rounded-xl p-lg relative overflow-hidden border border-outline-variant min-h-[400px] flex items-center justify-center">
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #004ac6 1px, transparent 0); background-size: 32px 32px;"></div>
+<div class="text-center z-10 max-w-2xl">
+<h3 class="text-headline-lg font-headline-lg mb-4">拓扑结构可视化</h3>
+<p class="text-body-lg mb-8 text-on-surface-variant">微服务目前在三个可用区之间以高可用 (HA) 集群模式运行。未检测到性能瓶颈。</p>
+<div class="relative w-full aspect-video rounded-xl bg-inverse-surface shadow-2xl overflow-hidden flex items-center justify-center">
+<img alt="架构图" class="w-full h-full object-cover opacity-50" data-alt="A futuristic technical visualization of a microservices architecture network. Nodes are connected by glowing blue light paths representing data flow. The background is dark and clean with digital HUD elements showing traffic percentages and health statuses. The style is high-tech, professional, and corporate modern, utilizing a color palette of deep navy and electric blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQAh5DyUQfdL3xlvYxyx5poj1CXsR3w_0SuzC9dgR82iTTRhYTC8hzOcGex2uSoyuZDfLM0NiExjjHXnDISEjzj_ZbhPYklWR-kx3mbDPJCSOyup7x8DgqBeeaarOHnD2aAXw1gZ6DEqTaMMnIEoa-hQcdfFmoJbcY39LtJUsW_jxF5KTJxiJQV-HXoo94KSZME_GpBOzg8lK0BzFkXytn28pjj2qHKdHIuCdefKSaibi05b8KO-i_ng-meXKZHXm7E1eNkDCWHUK9"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold flex items-center gap-3 shadow-xl hover:scale-105 transition-transform">
+<span class="material-symbols-outlined">zoom_in</span> 打开交互式图表
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Nav for Mobile -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-highest dark:bg-inverse-surface shadow-lg md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-md font-label-md">主页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-label-md font-label-md">任务</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-1 scale-90 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="text-label-md font-label-md">状态</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-md font-label-md">个人</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-desktop flex flex-col md:flex-row justify-between items-center bg-surface-container-highest dark:bg-inverse-surface border-t border-outline-variant md:ml-64 md:w-[calc(100%-16rem)]">
+<div class="mb-sm md:mb-0">
+<span class="text-body-lg font-bold text-on-surface">HomeCare Pro</span>
+<p class="text-label-md text-on-surface-variant mt-1">© 2024 HomeCare 微服务平台.</p>
+</div>
+<div class="flex gap-md">
+<a class="text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">微服务状态</a>
+<a class="text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">API 文档</a>
+<a class="text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">隐私政策</a>
+</div>
+</footer>
+<script>
+        // Micro-interaction for logs
+        document.querySelectorAll('.terminal-text').forEach(item => {
+            setInterval(() => {
+                if(Math.random() > 0.95) {
+                    item.style.opacity = '0.7';
+                    setTimeout(() => item.style.opacity = '1', 50);
+                }
+            }, 500);
+        });
+
+        // Simulate real-time updates for metrics
+        setInterval(() => {
+            const metrics = document.querySelectorAll('.text-body-md.text-primary');
+            metrics.forEach(m => {
+                const val = parseFloat(m.innerText);
+                const change = (Math.random() * 2 - 1).toFixed(0);
+                if (!isNaN(val)) {
+                    const unit = m.innerText.replace(/[0-9.]/g, '');
+                    m.innerText = (val + parseFloat(change)).toFixed(0) + unit;
+                }
+            });
+        }, 3000);
+    </script>
+</body></html>

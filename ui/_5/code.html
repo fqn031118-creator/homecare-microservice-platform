@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "on-secondary-container": "#00714d",
+                  "outline-variant": "#c3c6d7",
+                  "on-tertiary-fixed": "#2a1700",
+                  "surface-tint": "#0053db",
+                  "on-background": "#0b1c30",
+                  "error-container": "#ffdad6",
+                  "on-primary-fixed-variant": "#003ea8",
+                  "tertiary": "#784b00",
+                  "on-primary": "#ffffff",
+                  "on-error-container": "#93000a",
+                  "on-surface": "#0b1c30",
+                  "inverse-on-surface": "#eaf1ff",
+                  "inverse-primary": "#b4c5ff",
+                  "surface-container": "#e5eeff",
+                  "on-secondary-fixed": "#002113",
+                  "on-secondary-fixed-variant": "#005236",
+                  "primary": "#004ac6",
+                  "surface-variant": "#d3e4fe",
+                  "secondary-container": "#6cf8bb",
+                  "secondary-fixed": "#6ffbbe",
+                  "on-surface-variant": "#434655",
+                  "surface-container-low": "#eff4ff",
+                  "primary-container": "#2563eb",
+                  "secondary": "#006c49",
+                  "on-secondary": "#ffffff",
+                  "surface-container-highest": "#d3e4fe",
+                  "on-primary-fixed": "#00174b",
+                  "surface-bright": "#f8f9ff",
+                  "primary-fixed-dim": "#b4c5ff",
+                  "outline": "#737686",
+                  "error": "#ba1a1a",
+                  "primary-fixed": "#dbe1ff",
+                  "inverse-surface": "#213145",
+                  "surface-container-lowest": "#ffffff",
+                  "tertiary-fixed": "#ffddb8",
+                  "on-tertiary-fixed-variant": "#653e00",
+                  "background": "#f8f9ff",
+                  "on-primary-container": "#eeefff",
+                  "tertiary-container": "#996100",
+                  "on-tertiary-container": "#ffeedd",
+                  "on-error": "#ffffff",
+                  "secondary-fixed-dim": "#4edea3",
+                  "on-tertiary": "#ffffff",
+                  "tertiary-fixed-dim": "#ffb95f",
+                  "surface-container-high": "#dce9ff",
+                  "surface-dim": "#cbdbf5",
+                  "surface": "#f8f9ff"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "sm": "16px",
+                  "base": "4px",
+                  "margin-mobile": "16px",
+                  "xl": "64px",
+                  "md": "24px",
+                  "gutter": "24px",
+                  "xs": "8px",
+                  "lg": "40px",
+                  "margin-desktop": "48px"
+          },
+          "fontFamily": {
+                  "body-md": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "headline-xl": ["Inter"],
+                  "headline-md": ["Inter"],
+                  "headline-lg-mobile": ["Inter"],
+                  "code-sm": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "label-md": ["Inter"]
+          },
+          "fontSize": {
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                  "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                  "code-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                  "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                  "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop bg-surface dark:bg-surface-dim shadow-sm h-16 border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-4">
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed-dim">HomeCare Pro</span>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<nav class="flex gap-6">
+<a class="text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 font-bold text-label-md font-label-md transition-colors" href="#">工作台</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">服务市场</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">我的预约</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">客户支持</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="用户头像" data-alt="A professional headshot of a friendly home service expert in a clean, modern workspace. Soft natural lighting emphasizes a trustworthy and approachable demeanor. The background is a minimalist, well-organized home office in soft whites and blues, reflecting the brand's professional and high-quality aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCipUU-DJqY3ypJfCqmeoLYooDbUxMVnmLCjZ_5lN3aqkRNPLm72fXWY5xNqD1xqaOIwxPoKIj60_2hZ3ZZj_er5i06aM4RcJXdO23AGCEDJhbki0y2m9ezJbd-Su04_WiErQAj9S_RbEjfSjaSYeVLaa6pR8vUPfu78mKY8Gdm-sp6TH39I_wIpTvdlsAKFfsLKSVoBwielx6n7k6kH1Oq_bxbxkH3PCBU2uLjhmifaufFK0bMIY7ek26atG_Az8iSh7Ggyuk2yNC8"/>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-margin-mobile md:px-margin-desktop py-md grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- LEFT COLUMN: Profile & Availability -->
+<div class="md:col-span-3 flex flex-col gap-md">
+<section class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-24 h-24 mb-base">
+<img alt="服务商个人资料" class="rounded-full w-full h-full object-cover border-4 border-surface-container" data-alt="A medium close-up of a skilled service professional in their thirties, wearing a clean, branded navy blue polo shirt. They are smiling warmly toward the camera in a bright, airy setting with natural daylight. The overall mood is reliable, expert, and professional, following a clean Corporate Modern visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbWNlpMJa9g0Nkc2ohD2jYd-1NqdqPozGiwQm4RF0h_5kihcN7lD_grLrkwiQqcCfb7Gb98fJmsninCPA6yQgKwa9ImAiQIV6ncbWS0DLZhu8CObotdsBFfELeKhWXVB8PbsbKI4AUOBe64lLaD7U0Gp4OZeSKe9w-r5JvHNtlfYq5PkHR5BFY1F2uMSv3FUoFjQUnG_-PWAZdqGDSNONGgcTHuqDSP8n8Qfe0TTytgHIa6NMsxLJih1U47Z3-2BykEWUq1S5uqRlW"/>
+<div class="absolute bottom-1 right-1 w-6 h-6 bg-secondary rounded-full border-2 border-white flex items-center justify-center">
+<span class="w-3 h-3 bg-white rounded-full"></span>
+</div>
+</div>
+<h2 class="text-headline-md font-headline-md text-on-surface">David Miller</h2>
+<p class="text-label-md font-label-md text-outline">资深电工 • 4.9 ★</p>
+</div>
+<div class="mt-md space-y-4">
+<div class="flex items-center justify-between p-base bg-surface-container rounded-lg">
+<span class="text-label-md font-label-md text-on-surface px-2">正在接单</span>
+<button class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors bg-secondary" id="availabilityToggle">
+<span class="translate-x-6 inline-block h-4 w-4 transform rounded-full bg-white transition-transform"></span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-label-md font-label-md">
+<span class="text-outline">完工率</span>
+<span class="text-on-surface font-bold">98%</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2">
+<div class="bg-secondary h-2 rounded-full w-[98%]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Earnings Card -->
+<section class="bg-primary text-on-primary p-md rounded-xl shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<span class="text-label-md font-label-md opacity-80">本周收入</span>
+<div class="text-headline-lg font-headline-lg mt-base">￥17,450.00</div>
+<div class="flex items-center mt-base text-secondary-fixed font-bold text-label-md">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span class="ml-1">较上周增长 12%</span>
+</div>
+</div>
+<!-- Decorative SVG Pattern -->
+<div class="absolute right-0 bottom-0 opacity-10 transform translate-x-1/4 translate-y-1/4">
+<span class="material-symbols-outlined text-9xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+</section>
+</div>
+<!-- MIDDLE COLUMN: Today's Schedule -->
+<div class="md:col-span-6 flex flex-col gap-md">
+<section class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<div class="flex justify-between items-center mb-md">
+<h2 class="text-headline-md font-headline-md text-on-surface">今日行程</h2>
+<span class="text-label-md font-label-md text-primary font-bold">2023年10月24日</span>
+</div>
+<div class="relative space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-outline-variant">
+<!-- Timeline Item 1 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-primary border-4 border-surface-container-lowest z-10"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between p-md bg-surface-container-low rounded-xl border border-outline-variant border-l-4 border-l-primary">
+<div>
+<span class="text-label-md font-label-md text-primary font-bold">09:00 AM - 10:30 AM</span>
+<h3 class="text-body-lg font-bold text-on-surface mt-1">智能家居面板安装</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">枫叶大道 124 号，4 号套房</p>
+</div>
+<div class="mt-base md:mt-0">
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-label-md font-label-md">已确认</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-outline-variant border-4 border-surface-container-lowest z-10"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between p-md bg-surface-container-lowest rounded-xl border border-outline-variant border-l-4 border-l-outline-variant opacity-60">
+<div>
+<span class="text-label-md font-label-md text-outline font-bold">11:00 AM - 12:30 PM</span>
+<h3 class="text-body-lg font-bold text-on-surface mt-1">电动汽车充电桩维护</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">橡树林路 880 号</p>
+</div>
+<div class="mt-base md:mt-0">
+<span class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full text-label-md font-label-md">待开始</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 3 (Current Active) -->
+<div class="relative pl-10">
+<div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-secondary border-4 border-surface-container-lowest z-10 animate-pulse"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between p-md bg-surface-container-low rounded-xl border border-secondary border-l-4 border-l-secondary shadow-md ring-2 ring-secondary ring-opacity-10">
+<div>
+<span class="text-label-md font-label-md text-secondary font-bold">02:00 PM - 04:00 PM</span>
+<h3 class="text-body-lg font-bold text-on-surface mt-1">断路器维修</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">河滨大道 45 号</p>
+</div>
+<div class="mt-base md:mt-0 flex flex-col gap-2">
+<button class="bg-secondary text-on-secondary px-4 py-2 rounded-lg text-label-md font-label-md font-bold hover:opacity-90 transition-opacity">开始服务</button>
+<button class="text-secondary text-label-md font-label-md hover:underline">查看路线</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- History List -->
+<section class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-md">最近历史</h2>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-base hover:bg-surface-container transition-colors rounded-lg">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="bolt">bolt</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="text-body-md font-bold text-on-surface">照明设备更换</h4>
+<span class="text-label-md font-label-md text-secondary font-bold">+￥120.00</span>
+</div>
+<p class="text-label-md font-label-md text-outline">昨天 • 汤普森夫人</p>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="text-xs text-outline italic ml-2">"干活很利索，非常干净。"</span>
+</div>
+</div>
+</div>
+<div class="border-t border-outline-variant"></div>
+<div class="flex items-center gap-4 p-base hover:bg-surface-container transition-colors rounded-lg">
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="router">router</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h4 class="text-body-md font-bold text-on-surface">网络布线</h4>
+<span class="text-label-md font-label-md text-secondary font-bold">+￥350.00</span>
+</div>
+<p class="text-label-md font-label-md text-outline">10月22日 • 技术解决方案有限公司</p>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="star" data-weight="fill">star</span>
+<span class="material-symbols-outlined text-sm text-outline-variant" data-icon="star" data-weight="fill">star</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- RIGHT COLUMN: New Requests -->
+<div class="md:col-span-3 flex flex-col gap-md">
+<section class="bg-surface-container-high p-md rounded-xl border border-primary-container shadow-md border-opacity-30">
+<div class="flex items-center gap-2 mb-md">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+</span>
+<h2 class="text-headline-md font-headline-md text-on-surface">新请求 (2)</h2>
+</div>
+<div class="space-y-4">
+<!-- Request 1 -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="home_repair_service">home_repair_service</span>
+</div>
+<span class="bg-surface-container text-on-surface text-[10px] font-bold px-2 py-1 rounded">2.4 英里</span>
+</div>
+<div>
+<h4 class="text-body-md font-bold">紧急漏水维修</h4>
+<p class="text-label-md font-label-md text-outline">预计 ￥150 - ￥200</p>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 bg-secondary text-on-secondary py-2 rounded-lg text-label-md font-bold hover:opacity-90 transition-opacity">立即接单</button>
+<button class="px-3 border border-outline-variant rounded-lg hover:bg-error-container hover:text-on-error-container transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+</div>
+<!-- Request 2 -->
+<div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="w-10 h-10 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="ac_unit">ac_unit</span>
+</div>
+<span class="bg-surface-container text-on-surface text-[10px] font-bold px-2 py-1 rounded">5.1 英里</span>
+</div>
+<div>
+<h4 class="text-body-md font-bold">空调系统检查</h4>
+<p class="text-label-md font-label-md text-outline">预计 ￥80 - ￥120</p>
+</div>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 bg-secondary text-on-secondary py-2 rounded-lg text-label-md font-bold hover:opacity-90 transition-opacity">立即接单</button>
+<button class="px-3 border border-outline-variant rounded-lg hover:bg-error-container hover:text-on-error-container transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- System Health / Support -->
+<section class="bg-surface-container-low p-md rounded-xl border border-outline-variant">
+<h3 class="text-label-md font-label-md font-bold text-on-surface-variant uppercase mb-4">平台状态</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-secondary rounded-full"></div>
+<span class="text-label-md font-label-md text-on-surface">支付系统</span>
+<span class="ml-auto text-xs text-outline">运行正常</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 bg-secondary rounded-full"></div>
+<span class="text-label-md font-label-md text-on-surface">地图服务</span>
+<span class="ml-auto text-xs text-outline">运行正常</span>
+</div>
+<button class="w-full mt-2 text-primary text-label-md font-bold py-2 border border-primary rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-colors">帮助中心</button>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-highest dark:bg-inverse-surface shadow-lg rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-full px-6 py-1 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
+<span class="text-label-md font-label-md">首页</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container transition-colors p-2" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="assignment">assignment</span>
+<span class="text-label-md font-label-md">任务</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container transition-colors p-2" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="text-label-md font-label-md">钱包</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-surface-container transition-colors p-2" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="person">person</span>
+<span class="text-label-md font-label-md">个人</span>
+</a>
+</nav>
+<!-- Footer (Desktop Only) -->
+<footer class="hidden md:flex w-full py-xl px-margin-desktop flex-col md:flex-row justify-between items-center border-t border-outline-variant dark:border-outline bg-surface-container-highest dark:bg-inverse-surface mt-xl">
+<div class="flex flex-col gap-2">
+<span class="text-body-lg font-bold text-on-surface dark:text-inverse-on-surface">HomeCare Pro</span>
+<p class="text-body-md font-body-md text-on-surface-variant dark:text-outline-variant">© 2024 HomeCare 微服务平台。保留所有权利。</p>
+</div>
+<div class="flex gap-8 mt-md md:mt-0">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">服务条款</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">隐私政策</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">系统状态</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors text-label-md font-label-md" href="#">API 文档</a>
+</div>
+</footer>
+<script>
+    // Simple Availability Toggle Logic
+    const toggle = document.getElementById('availabilityToggle');
+    const toggleDot = toggle.querySelector('span');
+    let isOn = true;
+
+    toggle.addEventListener('click', () => {
+      isOn = !isOn;
+      if (isOn) {
+        toggle.classList.remove('bg-outline');
+        toggle.classList.add('bg-secondary');
+        toggleDot.classList.add('translate-x-6');
+        toggleDot.classList.remove('translate-x-1');
+      } else {
+        toggle.classList.remove('bg-secondary');
+        toggle.classList.add('bg-outline');
+        toggleDot.classList.remove('translate-x-6');
+        toggleDot.classList.add('translate-x-1');
+      }
+    });
+
+    // Accept/Decline feedback logic
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.innerText === '立即接单') {
+        btn.addEventListener('click', function() {
+          const card = this.closest('div.bg-surface-container-lowest');
+          card.classList.add('scale-95', 'opacity-0');
+          setTimeout(() => card.remove(), 300);
+        });
+      }
+    });
+  </script>
+</body></html>
