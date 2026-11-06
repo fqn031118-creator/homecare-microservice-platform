@@ -8,19 +8,19 @@ const demoAccounts = [
   {
     role: "消费者端",
     phone: "13800000000",
-    password: "123456",
+    password: "Demo123456!",
     description: "可直接体验下单、订单跟踪和评价。"
   },
   {
     role: "员工端",
     phone: "13900000000",
-    password: "123456",
+    password: "Demo123456!",
     description: "可体验接单、执行服务和任务流转。"
   },
   {
     role: "管理端",
     phone: "13700000000",
-    password: "123456",
+    password: "Demo123456!",
     description: "可进入后台管理、排班和营收模块。"
   }
 ];
@@ -91,8 +91,8 @@ export function LoginPage() {
     if (!/^1\d{10}$/.test(registerForm.phone.trim())) {
       nextErrors.registerPhone = "请输入 11 位有效手机号";
     }
-    if (registerForm.password.trim().length < 6) {
-      nextErrors.registerPassword = "密码至少 6 位";
+    if (registerForm.password.length < 8) {
+      nextErrors.registerPassword = "密码至少 8 位";
     }
     if (registerForm.password !== registerForm.confirmPassword) {
       nextErrors.confirmPassword = "两次输入的密码不一致";
@@ -308,7 +308,7 @@ export function LoginPage() {
                       className={`w-full rounded-xl border bg-surface-container-low px-md py-3 outline-none ${
                         errors.registerPassword ? "border-error" : "border-outline-variant focus:border-primary"
                       }`}
-                      placeholder="至少 6 位密码"
+                      placeholder="至少 8 位密码"
                     />
                     {errors.registerPassword ? <p className="mt-xs text-label-sm text-error">{errors.registerPassword}</p> : null}
                   </div>

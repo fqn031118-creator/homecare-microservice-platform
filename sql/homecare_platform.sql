@@ -88,17 +88,14 @@ CREATE TABLE IF NOT EXISTS payment_records (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users (name, phone, password, role, level_name)
-VALUES ('林然', '13800000000', '123456', 'customer', '尊享会员');
-
-INSERT INTO service_items (service_code, service_name, category_name, price, unit_name, duration_desc, description_text)
-VALUES
-('svc-001', '深度全屋消杀', '除虫消杀', 180.00, '次', '2-3小时', '适合新房入住、换季除螨和家庭深度消毒。'),
-('svc-002', '厨房深度保洁', '家庭保洁', 190.00, '次', '3小时', '针对油烟机外部、灶台和墙面做深度清洁。'),
-('svc-003', '水龙头维修', '家电维修', 110.00, '次', '1小时', '处理漏水、松动、阀芯老化等问题。');
-
-INSERT INTO providers (provider_code, provider_name, title_name, phone, rating, service_type, work_status, service_area)
-VALUES
-('provider-1', 'Elena Rodriguez', '资深电工', '13900000001', 4.90, '家电维修', '空闲', '静安/徐汇/长宁'),
-('provider-2', 'Sarah Jenkins', '深度保洁专家', '13900000002', 4.80, '家庭保洁', '任务中', '浦东/黄浦/闵行'),
-('provider-3', 'Maria Garcia', '金牌保洁专家', '13900000003', 4.80, '深度保洁', '空闲', '徐汇/黄浦/杨浦');
+-- Service and staff seed data; accounts are provisioned only with the demo profile.
+INSERT INTO service_items (service_code,service_name,category_name,price,unit_name,duration_desc,description_text) VALUES
+('svc-001','深度全屋消杀','除虫消杀',180,'次','2-3小时','整屋消毒与除螨'),
+('svc-002','厨房深度保洁','家庭保洁',190,'次','3小时','厨房深度清洁'),
+('svc-003','水龙头维修','家电维修',110,'次','1小时','漏水与阀芯维修'),
+('svc-004','空调系统检查','家电维修',120,'次','1.5小时','空调检测维护');
+INSERT INTO providers(provider_code,provider_name,title_name,phone,rating,service_type,work_status,service_area) VALUES
+('provider-1','Elena Rodriguez','资深电工','13900000001',4.9,'家电维修','空闲','静安/徐汇/长宁'),
+('provider-2','Sarah Jenkins','深度保洁专家','13900000000',4.8,'家庭保洁','空闲','浦东/黄浦/闵行'),
+('provider-3','Maria Garcia','金牌保洁专家','13900000003',4.8,'深度保洁','空闲','徐汇/黄浦/杨浦'),
+('provider-4','Liam Zhou','家电清洗工程师','13900000004',4.7,'家电维修','空闲','浦东/宝山/普陀');

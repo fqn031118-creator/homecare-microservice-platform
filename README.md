@@ -1,194 +1,90 @@
-# 智享到家 - 家政服务预约微服务平台
+# 智享到家家政服务预约平台
 
-这是一个基于 `Spring Boot + Spring Cloud` 课程实训背景设计的前端演示项目，主题是 `家政服务预约平台`。
+JavaEE课程设计项目。React 18 + Vite 前端，Java 17 + Spring Boot 3.3.1 / Spring MVC 后端，JdbcTemplate + MySQL 数据访问。核心业务使用 Controller → Service → Repository 三层结构。
 
-当前版本已经把 UI 草稿整合成一个可运行的 React + Vite 项目，并按课程项目上架/归档要求补齐了演示流程与文档骨架，覆盖：
+## 当前完成范围
 
-- 用户登录页
-- 用户端首页与服务浏览
-- 用户端下单页
-- 用户端订单追踪与评价
-- 服务人员端任务调度中心
-- 管理后台全局服务调度系统
-- 微服务架构运行状态监控中心
-- 项目业务逻辑说明页
-- 订单异常流：取消、改约、退款、投诉
-- API 调用适配层
-- Spring Cloud 微服务后端骨架
-- 系统设计文档、接口文档、部署文档
-- 答辩材料
-- 数据库初始化脚本与部署脚本示例
+- 数据库会话认证：随机256位令牌、摘要存储、2小时过期、注销撤销。
+- BCrypt密码，旧SHA-256密码成功登录后迁移；不接受旧明文密码，不再回退本地认证。
+- 真实数据库订单：预约 → 模拟支付 → 派单 → 接单 → 开始 → 完工 → 评价。
+- 订单归属、角色、人员绑定、在线状态、前置状态校验。
+- 事务与行锁处理并发派单/接单；支付每单唯一，重复请求幂等；评价每单唯一。
+- 取消未支付订单、派单前改约、退款/投诉申请持久化与操作审计。
+- 前端按服务器数据刷新；清除旧浏览器演示订单及明文认证存储。
 
-## 运行方式
+核心业务暂集中在 `auth-service`，以同库事务保证一致性。网关、订单、人员、支付独立模块仍为扩展骨架，不宣称已经实现分布式事务或完整微服务治理。支付不真实扣款；退款/投诉仅记录申请，审批与退款执行待实现。库存仍为展示样例。
 
-在项目目录下执行：
+## 本地启动
+
+需要 JDK 17、Maven、Node.js 20+、MySQL。MySQL 8.0为部署目标，本次真实接口验证使用本机隔离MySQL 9.6.0；H2只用于自动化测试。
+
+**首次安装到空数据库**，在仓库根目录执行：
 
 ```bash
-npm install
-npm run auth:dev
-npm run dev -- --host 0.0.0.0 --port 4173
+mysql -u root -p < sql/install.sql
 ```
 
-默认访问地址：
+`install.sql`包含建库、基础表、种子数据及v2扩展。只对空库执行一次。已有旧版数据库先备份、处理孤立引用和重复支付记录，再执行一次 `sql/upgrade_v2.sql`；该升级不含版本自动检测，禁止重复执行。旧明文账号需要管理员重置为BCrypt；不要恢复明文兼容。
 
 ```bash
-http://localhost:4173/
+export AUTH_DB_URL='jdbc:mysql://127.0.0.1:3306/homecare_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8'
+export AUTH_DB_USERNAME='your_app_user'
+export AUTH_DB_PASSWORD='your_database_password'
+# 只在课堂演示环境启用，创建示例账号并绑定Sarah人员档案
+export SPRING_PROFILES_ACTIVE=demo
+mvn -f backend/auth-service/pom.xml spring-boot:run
 ```
 
-认证服务默认运行在：
+另一个终端：
 
 ```bash
-http://127.0.0.1:8081/api/auth
+npm ci
+cp .env.example .env.local
+npm run dev
 ```
 
-认证服务现在默认连接 MySQL 的 `homecare_platform.users` 表。
+访问 Vite 输出的地址。默认后端8081，前端5173。跨域仅允许localhost/127.0.0.1来源，GET/POST/PUT/OPTIONS；远程部署建议使用同源反向代理。
 
-启动认证服务前，请先准备好 MySQL，并导入：
+## 演示账号
 
-```bash
-sql/homecare_platform.sql
-```
+仅 `demo` profile 自动配置；生产环境不启用该profile。默认账号只用于本地教学，不部署到公网。
 
-本地开发默认数据库配置：
+| 身份 | 手机号 | 密码 |
+|---|---|---|
+| 消费者 | 13800000000 | Demo123456! |
+| 服务人员Sarah | 13900000000 | Demo123456! |
+| 管理员 | 13700000000 | Demo123456! |
 
-```bash
-AUTH_DB_URL=jdbc:mysql://127.0.0.1:3306/homecare_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
-AUTH_DB_USERNAME=root
-AUTH_DB_PASSWORD=change_me_root_password
-```
+新注册用户只能成为customer；不支持客户端自选管理员角色。管理员派单应选择已绑定账号且在线空闲的人员，目前demo绑定provider-2。其余人员仅为档案展示，未绑定账号时不能派单。
 
-如果你使用项目里的 Docker Compose，`auth-service` 会自动连接到容器内的 `mysql` 服务。
-认证服务启动时还会自动补齐消费者端、员工端、管理端三个演示账号。
-
-演示账号：
-
-- 消费者端：`13800000000 / 123456`
-- 员工端：`13900000000 / 123456`
-- 管理端：`13700000000 / 123456`
-
-生产构建：
+## 验证
 
 ```bash
+mvn -f backend/pom.xml test
 npm run build
+# 服务已启动、空白演示库已初始化；脚本会新增测试订单与测试账号
+node scripts/verify-api.mjs
 ```
 
-## 单机一键部署
+接口脚本可通过 `API_BASE`、`DEMO_PASSWORD`覆盖配置。不要对生产数据库运行验证脚本。完整结果见 `docs/验证记录.md`。
 
-如果你要把前端、网关、后端骨架、MySQL 和 Redis 一起放到一台服务器上运行，项目已经提供单机 Docker 部署方案。
-
-前提环境：
+## Docker部署
 
 ```bash
-Docker
-Docker Compose
+cp deploy/.env.example deploy/.env
+# 编辑deploy/.env中的数据库密码
+./scripts/start-single-host.sh
 ```
 
-启动命令：
+Compose运行前端、核心业务服务和MySQL，数据库健康检查通过后启动服务，Nginx将 `/api/`代理至核心服务。MySQL及后端端口不映射公网。首次空卷自动执行install.sql；已有数据库卷不会重跑初始化。当前环境未安装Docker，Compose路径经过配置检查但未实际启动验证。
 
-```bash
-chmod +x scripts/start-single-host.sh
-bash scripts/start-single-host.sh
-```
+## 文档与答辩
 
-停止命令：
+- `docs/系统设计文档.md`：架构与实现边界。
+- `docs/接口文档.md`：真实接口与错误状态。
+- `docs/部署文档.md`：初始化、升级与维护。
+- `docs/验证记录.md`：执行证据与未测范围。
+- `docs/答辩演示.md`：三角色演示步骤。
+- `docs/课程设计/`：与实现同步的两份Word文档。
 
-```bash
-chmod +x scripts/stop-single-host.sh
-bash scripts/stop-single-host.sh
-```
-
-默认入口：
-
-```bash
-http://服务器IP/login
-```
-
-## 页面路由
-
-- `/login`：演示登录
-- `/`：用户端首页 / 服务浏览与预约
-- `/booking`：用户端预约下单
-- `/orders`：用户端订单追踪与评价
-- `/provider`：服务人员端任务调度中心
-- `/admin`：管理后台全局服务调度系统
-- `/ops`：微服务架构运行状态监控中心
-- `/overview`：项目说明与业务逻辑
-
-## 项目业务逻辑
-
-系统围绕“用户预约上门服务”展开，主要流程如下：
-
-1. 用户登录后浏览服务项目。
-2. 用户选择服务、服务人员、预约时间和地址后提交订单。
-3. 系统生成订单，订单进入 `待支付`。
-4. 支付成功后订单进入 `待派单`。
-5. 平台根据服务类型、服务区域、服务人员空闲状态完成派单。
-6. 服务人员在工作台接单并查看任务日程。
-7. 服务开始后订单进入 `服务中`。
-8. 服务完成后订单进入 `已完成`。
-9. 用户在订单页进行评分与评价。
-10. 管理后台查看订单、服务人员状态、营收和告警。
-
-## 建议的微服务拆分
-
-- `gateway-service`：统一入口、路由转发、权限拦截
-- `auth-service`：登录认证、JWT、角色权限
-- `user-service`：用户信息、地址管理
-- `service-item-service`：服务分类、服务项目、价格管理
-- `order-service`：下单、状态流转、评价入口
-- `staff-service`：服务人员资料、技能、排班、接单状态
-- `dispatch-service`：派单与调度策略
-- `payment-service`：模拟支付、账单与退款记录
-- `report-service`：统计分析、业务报表、运营看板
-
-## 当前实现说明
-
-目前已经不是纯静态展示，而是 `共享状态驱动的前端业务演示系统 + MySQL 认证服务`，适合：
-
-- 课程实训中期检查
-- 成果演示
-- 系统设计文档配图和业务讲解
-- 后续继续接 Spring Cloud 后端接口
-
-已实现的交互包括：
-
-- 登录守卫与真实注册/登录
-- 首页点击预约进入真实下单页
-- 下单页支持表单校验并创建新订单
-- 订单页可以完成支付，状态进入待派单
-- 订单页支持取消订单、改约、退款申请、投诉提交
-- 管理后台可以对首条待派单订单执行自动派单
-- 服务人员端可以对待派单订单执行接单、开始服务、完成服务
-- 订单页会根据状态变化开放评价功能
-- 后台和监控页会同步读取订单与服务状态
-- 多页面路由跳转与共享状态联动
-- 全局操作反馈、空状态和 404 页面
-- `src/api.js` 已作为前端调用适配层
-- `backend/auth-service` 已提供基于 MySQL 用户表的认证接口
-
-## 课程交付物目录
-
-为满足课程任务书中“开发文档 + 数据库脚本 + 部署脚本”的要求，项目中已新增：
-
-- `docs/系统设计文档.md`
-- `docs/接口文档.md`
-- `docs/部署文档.md`
-- `docs/答辩材料/`
-- `sql/homecare_platform.sql`
-- `scripts/init-db.sh`
-- `scripts/deploy.sh`
-- `backend/`
-- `deploy/docker-compose.yml`
-- `backend/Dockerfile`
-- `scripts/start-single-host.sh`
-- `scripts/stop-single-host.sh`
-
-## 后续建议
-
-如果你要把它继续做成完整课程项目，下一步优先级建议是：
-
-1. 搭 Spring Cloud 微服务骨架
-2. 继续把订单、服务人员、库存等模块替换为真实接口
-3. 接入 MySQL、Redis、Nacos、Gateway
-4. 增加取消订单、退款、地址簿与搜索筛选
-5. 完成最终部署文档、答辩 PPT 和小组分工说明
+生产化待办包括HTTPS、登录限流、会话管理界面、隐私授权/删除、订单分页、售后审批、技能与时段匹配、压测和容器实际验证。

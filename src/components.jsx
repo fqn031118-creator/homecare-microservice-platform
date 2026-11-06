@@ -23,6 +23,8 @@ export function ProtectedRoute({ children, allowedRoles }) {
   const location = useLocation();
   const { state } = useAppState();
 
+  if (!state.auth.ready) return <div className="p-lg">正在验证登录状态…</div>;
+
   if (!state.auth.isLoggedIn) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }

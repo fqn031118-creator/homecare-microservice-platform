@@ -4,13 +4,12 @@ import { useAppState } from "../app-state";
 import { EmptyState, Footer, Icon, MobileBottomNav, TopBar, UserActions } from "../components";
 import { buildMapUrl, formatLocationMeta, formatLocationSummary, formatLocationTime } from "../location";
 
-const dateOptions = [
-  { label: "明天上午 09:00 - 11:00", appointmentText: "2026年06月02日 周二 • 上午 09:00", dateKey: "2026-06-02 09:00" },
-  { label: "明天下午 14:00 - 16:00", appointmentText: "2026年06月02日 周二 • 下午 14:00", dateKey: "2026-06-02 14:00" },
-  { label: "周三上午 10:00 - 12:00", appointmentText: "2026年06月03日 周三 • 上午 10:00", dateKey: "2026-06-03 10:00" },
-  { label: "周三下午 15:00 - 17:00", appointmentText: "2026年06月03日 周三 • 下午 15:00", dateKey: "2026-06-03 15:00" },
-  { label: "周四上午 09:30 - 11:30", appointmentText: "2026年06月04日 周四 • 上午 09:30", dateKey: "2026-06-04 09:30" }
-];
+const dateOptions = Array.from({ length: 5 }, (_, i) => {
+  const date = new Date(); date.setDate(date.getDate() + 1 + Math.floor(i / 2));
+  const time = i % 2 ? "14:00" : "09:00";
+  const dateKey = `${date.toLocaleDateString("sv-SE")} ${time}`;
+  return { label: dateKey, appointmentText: dateKey, dateKey };
+});
 
 function buildAppointmentShort(value) {
   if (value.includes("明天")) {
@@ -151,7 +150,7 @@ export function BookingPage() {
     );
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const nextErrors = {};
 
     if (!serviceId) {
@@ -180,7 +179,7 @@ export function BookingPage() {
       return;
     }
 
-    dispatch({
+    const saved = await dispatch({
       type: "CREATE_ORDER",
       payload: {
         serviceId,
@@ -196,7 +195,7 @@ export function BookingPage() {
         remark: remark.trim()
       }
     });
-    navigate("/orders");
+    if (saved) navigate("/orders");
   }
 
   return (
@@ -215,7 +214,7 @@ export function BookingPage() {
           <p className="text-label-md text-primary">预约流程</p>
           <h1 className="text-headline-lg font-semibold">确认服务信息并提交预约</h1>
           <p className="max-w-3xl text-body-md text-on-surface-variant">
-            按真实平台的下单方式整理为 4 步：选服务、选时段、填上门信息、确认价格。默认由平台推荐最合适的服务人员，也支持主动指定。
+            按真实平台的下单方式整理为 4 步：选服务、选时段、填上门信息、确认价格。支付后由平台安排服务人员。
           </p>
         </div>
 
@@ -411,83 +410,11 @@ export function BookingPage() {
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-on-primary">4</div>
                 <div>
                   <h2 className="text-headline-md font-semibold">服务人员安排</h2>
-                  <p className="text-label-md text-on-surface-variant">平台会优先推荐匹配人员，你也可以根据偏好手动指定服务人员。</p>
+                  <p className="text-label-md text-on-surface-variant">服务人员将在支付后安排。</p>
                 </div>
               </div>
 
-              <div className="mb-md flex flex-wrap gap-sm">
-                <button
-                  className={`rounded-full px-md py-2 text-label-md transition-colors ${
-                    providerMode === "platform" ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface"
-                  }`}
-                  onClick={() => {
-                    setProviderMode("platform");
-                    if (!providerId && recommendedProvider?.id) {
-                      setProviderId(recommendedProvider.id);
-                    }
-                  }}
-                >
-                  平台智能推荐
-                </button>
-                <button
-                  className={`rounded-full px-md py-2 text-label-md transition-colors ${
-                    providerMode === "recommended" ? "bg-primary text-on-primary" : "bg-surface-container-low text-on-surface"
-                  }`}
-                  onClick={() => setProviderMode("recommended")}
-                >
-                  我想指定人员
-                </button>
-              </div>
-
-              {providerMode === "platform" ? (
-                recommendedProvider ? (
-                  <div className="rounded-2xl border border-secondary-container bg-secondary-container/40 p-md">
-                    <div className="flex items-start justify-between gap-sm">
-                      <div>
-                        <div className="text-body-lg font-semibold">{recommendedProvider.name}</div>
-                        <p className="mt-xs text-label-md text-on-surface-variant">
-                          {recommendedProvider.title} • {recommendedProvider.area}
-                        </p>
-                        <p className="mt-xs text-label-md text-on-surface-variant">{recommendedProvider.bio}</p>
-                      </div>
-                      <span className="rounded-full bg-white px-sm py-xs text-label-sm font-semibold text-secondary">
-                        系统推荐
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <EmptyState icon="person_off" title="暂无可推荐人员" description="请更换服务项目或稍后再试。" />
-                )
-              ) : (
-                <div className="space-y-sm">
-                  {availableProviders.map((provider) => (
-                    <button
-                      key={provider.id}
-                      className={`w-full rounded-2xl border p-md text-left transition-all ${
-                        provider.id === providerId
-                          ? "border-primary bg-primary-fixed"
-                          : "border-outline-variant bg-surface-container-low hover:border-primary/40"
-                      }`}
-                      onClick={() => setProviderId(provider.id)}
-                    >
-                      <div className="flex items-start justify-between gap-sm">
-                        <div>
-                          <div className="font-semibold">{provider.name}</div>
-                          <div className="text-label-md text-on-surface-variant">
-                            {provider.title} • {provider.area}
-                          </div>
-                          <div className="mt-xs text-label-md text-on-surface-variant">{provider.bio}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-label-md font-semibold text-primary">{provider.priceLabel}</div>
-                          <div className="mt-xs text-label-sm text-on-surface-variant">评分 {provider.rating}</div>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                  {errors.providerId ? <p className="text-label-sm text-error">{errors.providerId}</p> : null}
-                </div>
-              )}
+              <p className="text-body-md text-on-surface-variant">支付后由管理员派单或在线服务人员接单，人员确认后可查看联系方式。</p>
             </section>
           </div>
 
@@ -516,7 +443,7 @@ export function BookingPage() {
                 </div>
                 <div className="mt-sm flex items-center gap-xs text-label-md text-on-surface-variant">
                   <Icon name="badge" className="text-[18px]" />
-                  {providerMode === "platform" ? `平台推荐：${recommendedProvider?.name || "待匹配"}` : `已指定：${selectedProvider?.name || "待选择"}`}
+                  平台待分配
                 </div>
               </div>
 
@@ -531,7 +458,7 @@ export function BookingPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-on-surface-variant">支付方式</span>
-                  <span>在线支付</span>
+                  <span>模拟支付（不扣款）</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-outline-variant pt-sm text-headline-md font-semibold">
                   <span>合计</span>

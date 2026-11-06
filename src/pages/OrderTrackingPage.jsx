@@ -10,7 +10,7 @@ function getLifecycleMessage(order) {
     case "待支付":
       return "订单已创建，建议先核对服务信息后再完成支付。";
     case "待派单":
-      return "支付已完成，平台正在根据区域、技能和空闲时段安排人员。";
+      return "支付已完成，等待管理员派单或服务人员接单。";
     case "已派单":
       return `已派给 ${order.providerName || "服务人员"}，等待对方确认接单。`;
     case "已接单":
@@ -41,8 +41,8 @@ export function OrderTrackingPage() {
   const { state, dispatch } = useAppState();
   const api = useMemo(() => createPlatformApi(dispatch), [dispatch]);
   const myOrders = useMemo(
-    () => state.orders.filter((order) => order.customerName === state.auth.currentUser.name),
-    [state.auth.currentUser.name, state.orders]
+    () => state.orders.filter((order) => String(order.customerId) === String(state.auth.currentUser.id)),
+    [state.auth.currentUser.id, state.orders]
   );
   const [selectedOrderId, setSelectedOrderId] = useState(myOrders[0]?.id ?? null);
   const [rating, setRating] = useState(0);
@@ -82,37 +82,7 @@ export function OrderTrackingPage() {
     setAfterSalesTab("cancel");
   }, [trackedOrder?.id, trackedOrder?.rating, trackedOrder?.review, trackedOrder?.cancellationReason, trackedOrder?.appointmentText, trackedOrder?.refundReason, trackedOrder?.complaintContent]);
 
-  if (!myOrders.length) {
-    return (
-      <div className="min-h-screen bg-surface text-on-surface">
-        <TopBar
-          brand="PristineHome"
-          navItems={[
-            { to: "/", label: "首页" },
-            { to: "/orders", label: "订单" },
-            { to: "/booking", label: "下单" }
-          ]}
-          rightSlot={<UserActions />}
-        />
-        <main className="mx-auto max-w-container-max px-margin-mobile py-xl md:px-gutter">
-          <EmptyState
-            icon="receipt_long_off"
-            title="你还没有自己的订单"
-            description="暂时还没有订单记录，完成预约后会在这里查看订单进度。"
-            action={
-              <button
-                className="rounded-xl bg-primary px-lg py-3 text-label-md font-semibold text-on-primary"
-                onClick={() => navigate("/booking")}
-              >
-                去创建第一笔订单
-              </button>
-            }
-          />
-        </main>
-        <Footer compact />
-      </div>
-    );
-  }
+
 
   const statusMap = {
     待支付: 0,
@@ -133,12 +103,12 @@ export function OrderTrackingPage() {
     { title: trackedOrder?.status === "已评价" ? "评价完成" : "服务闭环", time: trackedOrder?.completedAt || trackedOrder?.cancelledAt || "—" }
   ];
 
-  const canCancel = ["待支付", "待派单", "已派单"].includes(trackedOrder?.status);
-  const canReschedule = ["待支付", "待派单", "已派单", "已接单"].includes(trackedOrder?.status);
+  const canCancel = ["待支付"].includes(trackedOrder?.status);
+  const canReschedule = ["待支付", "待派单"].includes(trackedOrder?.status);
   const canRefund = ["已完成", "已评价", "服务中"].includes(trackedOrder?.status) && trackedOrder?.refundStatus !== "处理中";
   const canComplaint = ["已接单", "服务中", "已完成", "已评价"].includes(trackedOrder?.status) && trackedOrder?.complaintStatus !== "处理中";
   const canReview =
-    ["已完成", "已评价"].includes(trackedOrder?.status) &&
+    ["已完成"].includes(trackedOrder?.status) &&
     trackedOrder?.refundStatus !== "处理中" &&
     trackedOrder?.complaintStatus !== "处理中";
   const hasAfterSalesRecord =
@@ -174,6 +144,38 @@ export function OrderTrackingPage() {
 
     setActivePanel("info");
   }, [activeAction, hasAfterSalesRecord, trackedOrder?.id, trackedOrder?.status]);
+
+  if (!myOrders.length) {
+    return (
+      <div className="min-h-screen bg-surface text-on-surface">
+        <TopBar
+          brand="PristineHome"
+          navItems={[
+            { to: "/", label: "首页" },
+            { to: "/orders", label: "订单" },
+            { to: "/booking", label: "下单" }
+          ]}
+          rightSlot={<UserActions />}
+        />
+        <main className="mx-auto max-w-container-max px-margin-mobile py-xl md:px-gutter">
+          <EmptyState
+            icon="receipt_long_off"
+            title="你还没有自己的订单"
+            description="暂时还没有订单记录，完成预约后会在这里查看订单进度。"
+            action={
+              <button
+                className="rounded-xl bg-primary px-lg py-3 text-label-md font-semibold text-on-primary"
+                onClick={() => navigate("/booking")}
+              >
+                去创建第一笔订单
+              </button>
+            }
+          />
+        </main>
+        <Footer compact />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface text-on-surface">
@@ -254,7 +256,7 @@ export function OrderTrackingPage() {
                     className="rounded-lg bg-primary px-md py-2 text-label-md font-semibold text-on-primary"
                     onClick={() => api.payOrder(trackedOrder.id)}
                   >
-                    去支付
+                    模拟支付
                   </button>
                 ) : null}
                 {canCancel ? (
@@ -710,7 +712,7 @@ export function OrderTrackingPage() {
                     </button>
                   ) : (
                     <div className="mt-md rounded-lg bg-surface-container-low py-3 text-center text-label-md text-on-surface-variant">
-                      评价入口暂未开放
+                      {trackedOrder?.status === "已评价" ? "评价已提交" : "评价入口暂未开放"}
                     </div>
                   )}
                 </div>
@@ -726,7 +728,7 @@ export function OrderTrackingPage() {
                       ? "当前订单已满足评价条件，可以直接填写评分和文字反馈。"
                       : trackedOrder?.refundStatus === "处理中" || trackedOrder?.complaintStatus === "处理中"
                         ? "售后处理中，评价入口暂时关闭。"
-                        : "服务完成后可进行评价。"}
+                        : trackedOrder?.status === "已评价" ? "感谢反馈，本单评价已保存。" : "服务完成后可进行评价。"}
                   </p>
                 </div>
               </section>

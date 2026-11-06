@@ -2,41 +2,33 @@ package com.homecare.auth;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+/** BCrypt for new credentials; SHA-256 migration only after successful legacy login. */
 public final class PasswordUtils {
-    private static final String SHA_256_HEX_PATTERN = "^[a-f0-9]{64}$";
+  private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder(12);
 
-    private PasswordUtils() {
+  private PasswordUtils() {}
+
+  public static String hash(String raw) {
+    return ENCODER.encode(raw);
+  }
+
+  public static boolean matches(String raw, String stored) {
+    if (raw == null || stored == null) return false;
+    if (stored.startsWith("$2")) return ENCODER.matches(raw, stored);
+    if (!stored.matches("[a-f0-9]{64}")) return false;
+    try {
+      return MessageDigest.isEqual(
+          HexFormat.of().parseHex(stored),
+          MessageDigest.getInstance("SHA-256").digest(raw.getBytes(StandardCharsets.UTF_8)));
+    } catch (Exception e) {
+      return false;
     }
+  }
 
-    public static String hash(String raw) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] bytes = digest.digest(raw.getBytes(StandardCharsets.UTF_8));
-            StringBuilder builder = new StringBuilder();
-            for (byte current : bytes) {
-                builder.append(String.format("%02x", current));
-            }
-            return builder.toString();
-        } catch (NoSuchAlgorithmException exception) {
-            throw new IllegalStateException("密码加密失败。", exception);
-        }
-    }
-
-    public static boolean matches(String raw, String storedValue) {
-        if (storedValue == null || storedValue.trim().isEmpty()) {
-            return false;
-        }
-
-        String normalized = storedValue.trim();
-        return normalized.equals(hash(raw)) || normalized.equals(raw);
-    }
-
-    public static boolean needsMigration(String storedValue) {
-        if (storedValue == null) {
-            return true;
-        }
-        return !storedValue.trim().matches(SHA_256_HEX_PATTERN);
-    }
+  public static boolean needsMigration(String stored) {
+    return stored == null || !stored.startsWith("$2");
+  }
 }

@@ -1,287 +1,59 @@
-function wait(ms = 120) {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, ms);
-  });
-}
-
 const AUTH_API_BASE = (import.meta.env.VITE_AUTH_API_BASE || "http://127.0.0.1:8081/api/auth").replace(/\/$/, "");
-const LOCAL_AUTH_STORAGE_KEY = "homecare-local-auth-users-v1";
-
-const localRoleProfiles = {
-  customer: {
-    id: "user-001",
-    name: "林然",
-    phone: "13800000000",
-    password: "123456",
-    role: "customer",
-    level: "尊享会员",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDCt9qx6hiIJv4zO1hAm9IXqZJUfqjDgq6X_Rr4pTplewpNKSEWZcpZGCPxdZyMM2o1Lhbo9r0Nzww8vQrySFTPSoCB-SRlCUd_zTTGYwLE5vQEIsv1VbelarbyfrKxXQuQSjFPAaTU9ljYGnAnqayplwR5dwioKsw_ylYqdnbA3D4ArN3CHXDwWkSAKlB28mrgZK1nzDcgRr0l-167QiCwj4Cd4TXI4_5EjV2G8JkDKOwqLyCxy-FBSX2W-qkwNOnobAs_mzscJyl8"
-  },
-  provider: {
-    id: "provider-user-001",
-    name: "Sarah Jenkins",
-    phone: "13900000000",
-    password: "123456",
-    role: "provider",
-    level: "服务人员",
-    avatar:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCZAJXYofLyWok8gqpVhTZsFzn9HNdZbxVzUHQjjtelIQGuS_Nkok6BoTmJg-kZoZbAapRv6v7gc8twjXbe-D4XiF2e24xKyH0GIpvuuUohdwax1c3YW_3ctU92_lwRoDrGBqiSWf68pfmoJq430AyhehKcyx6X3eu0MXGih_QkLuO9NToESZSkHPJORCif6xMU1EY7cYSai788_rW4ym-tMzI46cp9lxQVAUM037r4NXYOk-Fxt9SwlbsOGdeiaT9v8fYDbboBRT_T"
-  },
-  admin: {
-    id: "admin-001",
-    name: "James Wilson",
-    phone: "13700000000",
-    password: "123456",
-    role: "admin",
-    level: "平台管理员",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80"
-  }
+const PLATFORM_API_BASE = AUTH_API_BASE.replace(/\/auth$/, "/platform");
+const TOKEN_KEY = "homecare-session-v2";
+export const session = {
+  get: () => window.sessionStorage.getItem(TOKEN_KEY),
+  set: (token) => window.sessionStorage.setItem(TOKEN_KEY, token),
+  clear: () => window.sessionStorage.removeItem(TOKEN_KEY)
 };
-
-function requestAuth(path, options = {}) {
-  return fetch(`${AUTH_API_BASE}${path}`, {
+async function request(base, path, options = {}) {
+  const token = session.get();
+  const response = await fetch(`${base}${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
-  }).then(async (response) => {
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(data.message || "认证服务暂时不可用，请稍后再试。");
-    }
-
-    return data;
+    signal: AbortSignal.timeout(15000),
+    headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers }
   });
-}
-
-function isNetworkFailure(error) {
-  return error instanceof TypeError || /Failed to fetch|NetworkError|fetch/i.test(String(error?.message || ""));
-}
-
-function createLocalAuthSeed() {
-  return Object.values(localRoleProfiles).map((user) => ({ ...user }));
-}
-
-function loadLocalAuthUsers() {
-  if (typeof window === "undefined") {
-    return createLocalAuthSeed();
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(data.message || `请求失败（${response.status}）`);
+    error.status = response.status;
+    throw error;
   }
-
-  try {
-    const raw = window.localStorage.getItem(LOCAL_AUTH_STORAGE_KEY);
-    if (!raw) {
-      const seed = createLocalAuthSeed();
-      window.localStorage.setItem(LOCAL_AUTH_STORAGE_KEY, JSON.stringify(seed));
-      return seed;
-    }
-
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      throw new Error("invalid local auth payload");
-    }
-
-    const merged = createLocalAuthSeed().map((seedUser) => {
-      const storedUser = parsed.find((item) => item.phone === seedUser.phone);
-      return storedUser ? { ...seedUser, ...storedUser } : seedUser;
-    });
-
-    const customUsers = parsed.filter((item) => !merged.some((mergedUser) => mergedUser.phone === item.phone));
-    return [...merged, ...customUsers];
-  } catch {
-    const seed = createLocalAuthSeed();
-    window.localStorage.setItem(LOCAL_AUTH_STORAGE_KEY, JSON.stringify(seed));
-    return seed;
-  }
+  return data;
 }
-
-function saveLocalAuthUsers(users) {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(LOCAL_AUTH_STORAGE_KEY, JSON.stringify(users));
-  }
+const post = (body) => ({ method: "POST", body: JSON.stringify(body) });
+async function authenticate(path, payload) {
+  const result = await request(AUTH_API_BASE, path, post(payload));
+  if (!result.token) throw new Error("认证服务未返回有效会话。");
+  session.set(result.token);
+  return result;
 }
-
-function mapLocalUserToAuthResult(user) {
-  const roleProfile = localRoleProfiles[user.role] || localRoleProfiles.customer;
-  return {
-    token: `local-${user.role}-${user.phone}`,
-    user: {
-      id: user.id || roleProfile.id,
-      name: user.name,
-      phone: user.phone,
-      role: user.role,
-      level: user.level || roleProfile.level,
-      avatar: user.avatar || roleProfile.avatar
-    }
-  };
-}
-
-async function localLogin(payload) {
-  await wait();
-  const users = loadLocalAuthUsers();
-  const matchedUser = users.find((item) => item.phone === payload.phone);
-
-  if (!matchedUser || matchedUser.password !== payload.password) {
-    throw new Error("手机号或密码不正确。");
-  }
-
-  return mapLocalUserToAuthResult(matchedUser);
-}
-
-async function localRegister(payload) {
-  await wait();
-  const users = loadLocalAuthUsers();
-
-  if (users.some((item) => item.phone === payload.phone)) {
-    throw new Error("该手机号已注册。");
-  }
-
-  const nextUser = {
-    id: `local-user-${Date.now()}`,
-    name: payload.name,
-    phone: payload.phone,
-    password: payload.password,
-    role: "customer",
-    level: "普通会员",
-    avatar: localRoleProfiles.customer.avatar
-  };
-
-  const nextUsers = [...users, nextUser];
-  saveLocalAuthUsers(nextUsers);
-  return mapLocalUserToAuthResult(nextUser);
-}
-
-async function localUpdateProfile(payload) {
-  await wait();
-  const users = loadLocalAuthUsers();
-  const targetIndex = users.findIndex((item) => item.id === payload.id || item.phone === payload.phone);
-
-  if (targetIndex < 0) {
-    throw new Error("未找到当前账号。");
-  }
-
-  const nextUsers = [...users];
-  nextUsers[targetIndex] = {
-    ...nextUsers[targetIndex],
-    name: payload.name || nextUsers[targetIndex].name,
-    phone: payload.phone || nextUsers[targetIndex].phone,
-    avatar: payload.avatar || nextUsers[targetIndex].avatar
-  };
-  saveLocalAuthUsers(nextUsers);
-  return mapLocalUserToAuthResult(nextUsers[targetIndex]);
-}
-
-async function localPhoneExists(phone) {
-  await wait(80);
-  const users = loadLocalAuthUsers();
-  return { exists: users.some((item) => item.phone === phone) };
-}
-
-async function tryWithLocalFallback(executor, fallback) {
-  try {
-    return await executor();
-  } catch (error) {
-    if (!isNetworkFailure(error)) {
-      throw error;
-    }
-    return fallback();
-  }
-}
-
 export const authApi = {
-  async login(payload) {
-    return tryWithLocalFallback(
-      () =>
-        requestAuth("/login", {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }),
-      () => localLogin(payload)
-    );
-  },
-
-  async register(payload) {
-    return tryWithLocalFallback(
-      () =>
-        requestAuth("/register", {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }),
-      () => localRegister(payload)
-    );
-  },
-
-  async updateProfile(payload) {
-    return tryWithLocalFallback(
-      () =>
-        requestAuth("/profile", {
-          method: "PUT",
-          body: JSON.stringify(payload)
-        }),
-      () => localUpdateProfile(payload)
-    );
-  },
-
-  async phoneExists(phone) {
-    return tryWithLocalFallback(
-      () => requestAuth(`/phone-exists?phone=${encodeURIComponent(phone)}`),
-      () => localPhoneExists(phone)
-    );
-  }
+  login: (payload) => authenticate("/login", payload),
+  register: (payload) => authenticate("/register", payload),
+  me: () => request(AUTH_API_BASE, "/me"),
+  updateProfile: (payload) => request(AUTH_API_BASE, "/profile", { method: "PUT", body: JSON.stringify(payload) }),
+  phoneExists: (phone) => request(AUTH_API_BASE, `/phone-exists?phone=${encodeURIComponent(phone)}`),
+  logout: () => request(AUTH_API_BASE, "/logout", post({}))
 };
-
+export const platformApi = {
+  snapshot: () => request(PLATFORM_API_BASE, "/snapshot"),
+  create: (payload) => request(PLATFORM_API_BASE, "/orders", post(payload)),
+  action: (id, operation, payload) => request(PLATFORM_API_BASE, `/orders/${encodeURIComponent(id)}/${operation}`, post(payload)),
+  online: (online) => request(PLATFORM_API_BASE, "/provider/online", { method: "PUT", body: JSON.stringify({ online }) })
+};
+// Dispatch handles remote writes and reloads authoritative server state.
 export function createPlatformApi(dispatch) {
   return {
-    async createOrder(payload) {
-      await wait();
-      dispatch({ type: "CREATE_ORDER", payload });
-    },
-
-    async payOrder(orderId) {
-      await wait();
-      dispatch({ type: "PAY_ORDER", orderId });
-    },
-
-    async assignOrder(orderId, providerId) {
-      await wait();
-      dispatch({ type: "MANUAL_ASSIGN_ORDER", orderId, providerId });
-    },
-
-    async completeOrder(orderId) {
-      await wait();
-      dispatch({ type: "COMPLETE_ORDER", orderId });
-    },
-
-    async reviewOrder(orderId, rating, review) {
-      await wait();
-      dispatch({ type: "SUBMIT_REVIEW", orderId, rating, review });
-    },
-
-    async restockItem(itemId) {
-      await wait();
-      dispatch({ type: "RESTOCK_ITEM", itemId });
-    },
-
-    async cancelOrder(orderId, reason) {
-      await wait();
-      dispatch({ type: "CANCEL_ORDER", orderId, reason });
-    },
-
-    async rescheduleOrder(orderId, appointmentText, dateKey) {
-      await wait();
-      dispatch({ type: "RESCHEDULE_ORDER", orderId, appointmentText, dateKey });
-    },
-
-    async requestRefund(orderId, reason) {
-      await wait();
-      dispatch({ type: "REQUEST_REFUND", orderId, reason });
-    },
-
-    async submitComplaint(orderId, content) {
-      await wait();
-      dispatch({ type: "SUBMIT_COMPLAINT", orderId, content });
-    }
+    createOrder: (payload) => dispatch({ type: "CREATE_ORDER", payload }),
+    payOrder: (orderId) => dispatch({ type: "PAY_ORDER", orderId }),
+    assignOrder: (orderId, providerId) => dispatch({ type: "MANUAL_ASSIGN_ORDER", orderId, providerId }),
+    completeOrder: (orderId) => dispatch({ type: "COMPLETE_ORDER", orderId }),
+    reviewOrder: (orderId, rating, review) => dispatch({ type: "SUBMIT_REVIEW", orderId, rating, review }),
+    restockItem: () => dispatch({ type: "PUSH_TOAST", payload: { message: "库存为展示数据，暂不支持真实入库。", tone: "warning" } }),
+    cancelOrder: (orderId, reason) => dispatch({ type: "CANCEL_ORDER", orderId, reason }),
+    rescheduleOrder: (orderId, appointmentText, dateKey) => dispatch({ type: "RESCHEDULE_ORDER", orderId, appointmentText, dateKey }),
+    requestRefund: (orderId, reason) => dispatch({ type: "REQUEST_REFUND", orderId, reason }),
+    submitComplaint: (orderId, content) => dispatch({ type: "SUBMIT_COMPLAINT", orderId, content })
   };
 }

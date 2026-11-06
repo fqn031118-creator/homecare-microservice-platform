@@ -6,6 +6,8 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+ARG VITE_AUTH_API_BASE=/api/auth
+ENV VITE_AUTH_API_BASE=${VITE_AUTH_API_BASE}
 RUN npm run build
 
 FROM nginx:1.27-alpine

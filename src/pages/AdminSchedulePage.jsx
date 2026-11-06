@@ -59,9 +59,7 @@ export function AdminSchedulePage() {
             </thead>
             <tbody className="divide-y divide-outline-variant/30">
               {rows.map((row) => {
-                const providerOptions = state.providers.filter(
-                  (provider) => provider.serviceType.includes("保洁") === row.category.includes("保洁") || row.category.includes("维修") === provider.serviceType.includes("维修")
-                );
+                const providerOptions = state.providers.filter((p) => p.available && p.online && p.workStatus === "空闲");
 
                 return (
                   <tr key={row.id} className="hover:bg-surface-container-low">

@@ -7,7 +7,7 @@ export function AdminRevenuePage() {
   const [filter, setFilter] = useState("all");
 
   const paidOrders = useMemo(() => {
-    const source = state.orders.filter((order) => order.status !== "待支付");
+    const source = state.orders.filter((order) => Boolean(order.paidAt));
     if (filter === "repair") {
       return source.filter((order) => order.category.includes("维修"));
     }
@@ -15,7 +15,7 @@ export function AdminRevenuePage() {
       return source.filter((order) => order.category.includes("保洁") || order.category.includes("消杀"));
     }
     if (filter === "today") {
-      return source.filter((order) => String(order.paidAt || order.createdAt).includes("2026-06-01"));
+      return source.filter((order) => String(order.paidAt || order.createdAt).includes(new Date().toLocaleDateString("sv-SE")));
     }
     return source;
   }, [filter, state.orders]);
@@ -25,7 +25,7 @@ export function AdminRevenuePage() {
   const feeRevenue = paidOrders.reduce((sum, order) => sum + order.serviceFee, 0);
 
   return (
-    <AdminShell title="营收统计" description="查看订单收入、服务费收入和当前业务结构。">
+    <AdminShell title="营收统计" description="按数据库模拟支付记录统计，金额不代表真实营收。">
       <div className="mb-md flex flex-wrap gap-sm">
         {[
           ["all", "全部订单"],

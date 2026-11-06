@@ -1,119 +1,46 @@
-version: "3.9"
-
 services:
   frontend:
     build:
       context: ..
       dockerfile: Dockerfile
-    container_name: homecare-frontend
+      args:
+        VITE_AUTH_API_BASE: /api/auth
     ports:
       - "80:80"
     depends_on:
-      - gateway-service
+      auth-service:
+        condition: service_started
     restart: unless-stopped
-
   mysql:
     image: mysql:8.0
-    container_name: homecare-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: change_me_root_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: homecare_platform
       MYSQL_USER: homecare
-      MYSQL_PASSWORD: change_me_app_password
-    ports:
-      - "3306:3306"
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ../sql/homecare_platform.sql:/docker-entrypoint-initdb.d/homecare_platform.sql:ro
-    command:
-      - --default-authentication-plugin=mysql_native_password
+      - ../sql/install.sql:/docker-entrypoint-initdb.d/01-install.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
     restart: unless-stopped
-
-  redis:
-    image: redis:7-alpine
-    container_name: homecare-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    restart: unless-stopped
-
-  gateway-service:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: gateway-service
-    container_name: homecare-gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      - auth-service
-      - order-service
-      - staff-service
-      - payment-service
-    restart: unless-stopped
-
   auth-service:
     build:
       context: ../backend
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: auth-service
-    container_name: homecare-auth
-    ports:
-      - "8081:8081"
     environment:
       AUTH_DB_URL: jdbc:mysql://mysql:3306/homecare_platform?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8
       AUTH_DB_USERNAME: homecare
-      AUTH_DB_PASSWORD: change_me_app_password
+      AUTH_DB_PASSWORD: ${MYSQL_PASSWORD:?Set MYSQL_PASSWORD}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-}
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
     restart: unless-stopped
-
-  order-service:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: order-service
-    container_name: homecare-order
-    ports:
-      - "8082:8082"
-    depends_on:
-      - mysql
-      - redis
-    restart: unless-stopped
-
-  staff-service:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: staff-service
-    container_name: homecare-staff
-    ports:
-      - "8083:8083"
-    depends_on:
-      - mysql
-      - redis
-    restart: unless-stopped
-
-  payment-service:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
-      args:
-        SERVICE_NAME: payment-service
-    container_name: homecare-payment
-    ports:
-      - "8084:8084"
-    depends_on:
-      - mysql
-      - redis
-    restart: unless-stopped
-
 volumes:
   mysql_data:
-  redis_data:

@@ -7,7 +7,7 @@ export function AdminInventoryPage() {
   const [showLogs, setShowLogs] = useState(false);
 
   return (
-    <AdminShell title="库存管理" description="管理上门耗材、维修配件和安全库存预警。">
+    <AdminShell title="库存示例" description="当前为样例库存，不连接真实仓储；管理上门耗材、维修配件和安全库存预警。">
       <div className="mb-lg grid grid-cols-1 gap-gutter md:grid-cols-3">
         {[
           ["库存总数", state.inventoryItems.length, "当前管理中的物料种类"],

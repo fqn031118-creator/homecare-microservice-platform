@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+const base = process.env.API_BASE || 'http://127.0.0.1:8081';
+const password = process.env.DEMO_PASSWORD || 'Demo123456!';
+const results = [];
+async function request(path, token, body, expected = 200, method = body ? 'POST' : 'GET') {
+  const response = await fetch(base + path, { method, headers: { 'Content-Type': 'application/json', ...(token ? {Authorization: `Bearer ${token}`} : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
+  const data = await response.json().catch(() => ({}));
+  assert.equal(response.status, expected, `${path}: ${JSON.stringify(data)}`);
+  return data;
+}
+async function login(phone) { return (await request('/api/auth/login', null, {phone, password})).token; }
+const customer = await login('13800000000');
+const provider = await login('13900000000');
+const admin = await login('13700000000');
+results.push('三角色真实数据库登录通过');
+const date = new Date(Date.now() + 3*86400000).toLocaleDateString('sv-SE') + ' 10:00';
+const booking = {serviceId:'svc-001',dateKey:date,address:'接口验证测试地址88号',contactName:'测试联系人',contactPhone:'13800000000'};
+await request('/api/platform/orders', null, booking, 401);
+const first = await request('/api/platform/orders', customer, booking);
+const path = `/api/platform/orders/${first.id}/`;
+await request(path+'assign', customer, {providerId:'provider-2'}, 403);
+await request(path+'pay', customer, {});
+await Promise.all([request(path+'pay', customer, {}),request(path+'pay',customer,{})]);
+results.push('无身份401、角色越权403、并发重复支付通过');
+const assignments = await Promise.all([fetch(base+path+'assign',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${admin}`},body:JSON.stringify({providerId:'provider-2'})}),fetch(base+path+'assign',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${admin}`},body:JSON.stringify({providerId:'provider-2'})})]);
+assert.deepEqual(assignments.map(r=>r.status).sort(),[200,409]);
+results.push('并发派单仅一成功，另一409');
+await request(path+'start',provider,{},409);
+await request(path+'accept',provider,{});
+await request(path+'start',provider,{});
+await request(path+'complete',provider,{});
+await request(path+'review',customer,{rating:6,review:'越界评分'},400);
+await request(path+'review',customer,{rating:5,review:'真实接口闭环验证'});
+await request(path+'review',customer,{rating:5,review:'重复评价'},409);
+const fresh = await login('13800000000');
+const snapshot = await request('/api/platform/snapshot',fresh);
+assert.equal(snapshot.orders.find(o=>o.id===first.id).status,'已评价');
+results.push('重新登录可查数据库订单；完整闭环及评分边界通过');
+const otherPhone = '15'+String(Date.now()).slice(-9);
+const other = await request('/api/auth/register',null,{name:'隔离测试',phone:otherPhone,password:'Test12345!',confirmPassword:'Test12345!'},201);
+await request(path+'pay',other.token,{},403);
+const isolated = await request('/api/platform/snapshot',other.token);
+assert.equal(isolated.orders.length,0);
+await request('/api/auth/profile',other.token,{id:1,name:'越权',phone:otherPhone},403,'PUT');
+await request('/api/auth/logout',other.token,{});
+await request('/api/auth/me',other.token,null,401);
+results.push('跨用户订单隔离、资料越权及注销撤销通过');
+console.log(JSON.stringify({database:'MySQL',order:first.id,results},null,2));

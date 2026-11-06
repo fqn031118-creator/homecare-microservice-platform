@@ -15,7 +15,7 @@ const categoryToService = {
 export function LandingPage() {
   const navigate = useNavigate();
   const { state, dispatch } = useAppState();
-  const myOrders = state.orders.filter((order) => order.customerName === state.auth.currentUser.name);
+  const myOrders = state.orders.filter((order) => String(order.customerId) === String(state.auth.currentUser.id));
   const pendingPaymentOrder = myOrders.find((order) => order.status === "待支付");
   const nextServiceOrder = myOrders.find((order) => ["待派单", "已派单", "已接单", "服务中"].includes(order.status));
   const featuredProviders = state.providers.slice(0, 3);

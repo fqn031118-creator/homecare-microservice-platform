@@ -19,7 +19,7 @@ function getTaskActions(task, dispatch) {
       {
         label: "联系客户",
         className: "bg-surface-container-high text-on-surface",
-        onClick: () => dispatch({ type: "PUSH_TOAST", payload: { message: `已通知 ${task.customerName}，请保持电话畅通。`, tone: "info" } })
+        onClick: () => dispatch({ type: "PUSH_TOAST", payload: { message: `客户电话：${task.contactPhone || "暂无"}`, tone: "info" } })
       },
       {
         label: "开始服务",
@@ -34,7 +34,7 @@ function getTaskActions(task, dispatch) {
       {
         label: "上传结果",
         className: "bg-surface-container-high text-on-surface",
-        onClick: () => dispatch({ type: "PUSH_TOAST", payload: { message: `订单 ${task.id} 的现场结果已记录到服务日志。`, tone: "info" } })
+        onClick: () => dispatch({ type: "PUSH_TOAST", payload: { message: `订单 ${task.id} 的结果上传尚未开放，请联系管理员。`, tone: "info" } })
       },
       {
         label: "完成服务",
@@ -50,8 +50,7 @@ function getTaskActions(task, dispatch) {
 export function ProviderPage() {
   const { state, dispatch } = useAppState();
   const online = state.providerConsole.online;
-  const matchedProvider = state.providers.find((item) => item.name === state.auth.currentUser.name);
-  const currentProviderId = matchedProvider?.id || state.providerConsole.currentProviderId;
+  const currentProviderId = state.providerConsole.currentProviderId;
   const currentProvider = state.providers.find((item) => item.id === currentProviderId);
 
   const assignedToMe = useMemo(
@@ -149,11 +148,11 @@ export function ProviderPage() {
 
           <section className="relative overflow-hidden rounded-3xl bg-primary p-md text-on-primary shadow-lg">
             <div className="relative z-10">
-              <span className="text-label-md opacity-80">本周收入</span>
-              <div className="mt-base text-headline-lg font-semibold">¥17,450.00</div>
+              <span className="text-label-md opacity-80">已完成订单金额（模拟）</span>
+              <div className="mt-base text-headline-lg font-semibold">¥{completedTasks.reduce((sum, item) => sum + item.amount, 0).toFixed(2)}</div>
               <div className="mt-base flex items-center text-label-md font-semibold text-secondary-fixed">
                 <Icon name="trending_up" className="text-sm" />
-                <span className="ml-1">较上周增长 12%</span>
+                <span className="ml-1">依据当前订单统计</span>
               </div>
             </div>
             <div className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 opacity-10">
@@ -175,7 +174,7 @@ export function ProviderPage() {
           <section className="rounded-3xl border border-outline-variant bg-surface-container-lowest p-md shadow-sm">
             <div className="mb-md flex items-center justify-between">
               <h2 className="text-headline-md font-semibold">今日行程</h2>
-              <span className="text-label-md font-semibold text-primary">2026年06月01日</span>
+              <span className="text-label-md font-semibold text-primary">{new Date().toLocaleDateString("zh-CN")}</span>
             </div>
             <div className="space-y-sm">
               {todaySchedule.length ? (

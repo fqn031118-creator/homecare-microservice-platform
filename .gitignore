@@ -5,3 +5,7 @@ backend/auth-service/data/
 backend/*/target/
 target/
 dist/
+
+.env
+.env.local
+deploy/.env

@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import { authApi, platformApi, session } from "./api";
+import { createContext, useContext, useEffect, useMemo, useReducer, useCallback, useRef } from "react";
 
 const STORAGE_KEY = "homecare-platform-state-v2";
 
@@ -265,188 +266,7 @@ const initialState = {
       createdAt: "2026-06-01 09:45"
     }
   ],
-  orders: [
-    {
-      id: "PH-2024-8842",
-      serviceName: "深度全屋消杀服务",
-      category: "除虫消杀",
-      appointmentText: "2026年06月02日 周二 • 上午 09:00",
-      appointmentShort: "明天上午 09:00",
-      dateKey: "2026-06-02 09:00",
-      address: "浦东新区锦绣路 1888 号",
-      customerName: "林然",
-      providerId: "provider-2",
-      providerName: "Sarah Jenkins",
-      providerTitle: "深度保洁专家",
-      amount: 195,
-      baseAmount: 180,
-      serviceFee: 15,
-      status: "待支付",
-      createdAt: "2026-06-01 09:00",
-      paidAt: null,
-      assignedAt: null,
-      startedAt: null,
-      completedAt: null,
-      cancelledAt: null,
-      refundStatus: "未申请",
-      complaintStatus: "无投诉",
-      cancellationReason: "",
-      refundReason: "",
-      complaintContent: "",
-      rating: 0,
-      review: ""
-    },
-    {
-      id: "PH-2024-8836",
-      serviceName: "水龙头维修",
-      category: "家电维修",
-      appointmentText: "2026年06月04日 周四 • 下午 02:00",
-      appointmentShort: "本周四下午 02:00",
-      dateKey: "2026-06-04 14:00",
-      address: "静安区常德路 900 号",
-      customerName: "林然",
-      providerId: "provider-1",
-      providerName: "Elena Rodriguez",
-      providerTitle: "资深电工",
-      amount: 120,
-      baseAmount: 110,
-      serviceFee: 10,
-      status: "服务中",
-      createdAt: "2026-05-31 14:20",
-      paidAt: "2026-05-31 14:30",
-      assignedAt: "2026-05-31 15:00",
-      startedAt: "2026-06-01 09:00",
-      completedAt: null,
-      cancelledAt: null,
-      refundStatus: "未申请",
-      complaintStatus: "无投诉",
-      cancellationReason: "",
-      refundReason: "",
-      complaintContent: "",
-      rating: 0,
-      review: ""
-    },
-    {
-      id: "PH-2024-8821",
-      serviceName: "厨房深度保洁",
-      category: "家庭保洁",
-      appointmentText: "2026年06月03日 周三 • 下午 01:30",
-      appointmentShort: "周三下午 01:30",
-      dateKey: "2026-06-03 13:30",
-      address: "黄浦区淮海中路 520 号",
-      customerName: "林然",
-      providerId: null,
-      providerName: null,
-      providerTitle: null,
-      amount: 210,
-      baseAmount: 190,
-      serviceFee: 20,
-      status: "待派单",
-      createdAt: "2026-06-01 08:15",
-      paidAt: "2026-06-01 08:20",
-      assignedAt: null,
-      startedAt: null,
-      completedAt: null,
-      cancelledAt: null,
-      refundStatus: "未申请",
-      complaintStatus: "无投诉",
-      cancellationReason: "",
-      refundReason: "",
-      complaintContent: "",
-      rating: 0,
-      review: ""
-    },
-    {
-      id: "PH-2024-8816",
-      serviceName: "空调系统检查",
-      category: "家电维修",
-      appointmentText: "2026年06月05日 周五 • 上午 11:00",
-      appointmentShort: "周五上午 11:00",
-      dateKey: "2026-06-05 11:00",
-      address: "宝山区共和新路 188 号",
-      customerName: "周倩",
-      providerId: "provider-4",
-      providerName: "Liam Zhou",
-      providerTitle: "家电清洗工程师",
-      amount: 135,
-      baseAmount: 120,
-      serviceFee: 15,
-      status: "已派单",
-      createdAt: "2026-06-01 07:30",
-      paidAt: "2026-06-01 07:35",
-      assignedAt: "2026-06-01 07:50",
-      startedAt: null,
-      completedAt: null,
-      cancelledAt: null,
-      refundStatus: "未申请",
-      complaintStatus: "无投诉",
-      cancellationReason: "",
-      refundReason: "",
-      complaintContent: "",
-      rating: 0,
-      review: ""
-    },
-    {
-      id: "PH-2024-8809",
-      serviceName: "厨房深度保洁",
-      category: "家庭保洁",
-      appointmentText: "2026年05月30日 周五 • 下午 03:00",
-      appointmentShort: "上周五下午 03:00",
-      dateKey: "2026-05-30 15:00",
-      address: "徐汇区虹桥路 288 号",
-      customerName: "王敏",
-      providerId: "provider-3",
-      providerName: "Maria Garcia",
-      providerTitle: "金牌保洁专家",
-      amount: 205,
-      baseAmount: 190,
-      serviceFee: 15,
-      status: "已评价",
-      createdAt: "2026-05-29 13:10",
-      paidAt: "2026-05-29 13:15",
-      assignedAt: "2026-05-29 13:25",
-      startedAt: "2026-05-30 15:05",
-      completedAt: "2026-05-30 17:55",
-      cancelledAt: null,
-      refundStatus: "未申请",
-      complaintStatus: "无投诉",
-      cancellationReason: "",
-      refundReason: "",
-      complaintContent: "",
-      rating: 5,
-      review: "清洁非常彻底，沟通也很顺畅。"
-    },
-    {
-      id: "PH-2024-8801",
-      serviceName: "深度全屋消杀",
-      category: "除虫消杀",
-      appointmentText: "2026年05月28日 周三 • 上午 09:30",
-      appointmentShort: "上周三上午 09:30",
-      dateKey: "2026-05-28 09:30",
-      address: "闵行区七莘路 399 号",
-      customerName: "赵航",
-      providerId: "provider-2",
-      providerName: "Sarah Jenkins",
-      providerTitle: "深度保洁专家",
-      amount: 195,
-      baseAmount: 180,
-      serviceFee: 15,
-      status: "已完成",
-      createdAt: "2026-05-27 16:40",
-      paidAt: "2026-05-27 16:45",
-      assignedAt: "2026-05-27 17:10",
-      startedAt: "2026-05-28 09:35",
-      completedAt: "2026-05-28 11:40",
-      cancelledAt: null,
-      refundStatus: "处理中",
-      complaintStatus: "处理中",
-      cancellationReason: "",
-      refundReason: "服务后仍有气味残留，希望部分退款。",
-      complaintContent: "服务结束后卧室区域处理不够彻底。",
-      rating: 0,
-      review: ""
-    }
-  ],
+  orders: [],
   providerConsole: {
     currentProviderId: "provider-1",
     online: true
@@ -455,8 +275,8 @@ const initialState = {
     selectedServiceId: "svc-001",
     providerMode: "platform",
     selectedProviderId: "provider-2",
-    appointmentText: "2026年06月03日 周三 • 上午 10:00",
-    dateKey: "2026-06-03 10:00",
+    appointmentText: "请选择预约日期",
+    dateKey: new Date(Date.now() + 86400000).toLocaleDateString("sv-SE") + " 10:00",
     address: "徐汇区漕溪北路 66 号",
     serviceLocation: null,
     contactName: "林然",
@@ -466,50 +286,10 @@ const initialState = {
 };
 
 function loadState() {
-  if (typeof window === "undefined") {
-    return initialState;
-  }
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return initialState;
-    }
-
-    const parsed = JSON.parse(raw);
-    return {
-      ...initialState,
-      ...parsed,
-      auth: {
-        ...initialState.auth,
-        ...parsed.auth,
-        currentUser: {
-          ...initialState.auth.currentUser,
-          ...parsed.auth?.currentUser
-        }
-      },
-      userProfiles: parsed.userProfiles ?? initialState.userProfiles,
-      ui: {
-        ...initialState.ui,
-        ...parsed.ui
-      },
-      providerConsole: {
-        ...initialState.providerConsole,
-        ...parsed.providerConsole
-      },
-      bookingDraft: {
-        ...initialState.bookingDraft,
-        ...parsed.bookingDraft
-      },
-      serviceCatalog: parsed.serviceCatalog ?? initialState.serviceCatalog,
-      providers: parsed.providers ?? initialState.providers,
-      inventoryItems: parsed.inventoryItems ?? initialState.inventoryItems,
-      inventoryLogs: parsed.inventoryLogs ?? initialState.inventoryLogs,
-      orders: parsed.orders ?? initialState.orders
-    };
-  } catch {
-    return initialState;
-  }
+  // Remove historical demo data, including plaintext credentials from v1.
+  window.localStorage.removeItem(STORAGE_KEY);
+  window.localStorage.removeItem("homecare-local-auth-users-v1");
+  return { ...initialState, orders: [], auth: { isLoggedIn: false, ready: !session.get(), currentUser: roleProfiles.customer } };
 }
 
 function reducer(state, action) {
@@ -549,465 +329,19 @@ function reducer(state, action) {
       };
     }
 
-    case "CREATE_ORDER": {
-      const service = state.serviceCatalog.find((item) => item.id === action.payload.serviceId);
-      const provider = state.providers.find((item) => item.id === action.payload.providerId);
-
-      if (!service || !provider) {
-        return appendToast(state, "请选择有效的服务项目和服务人员。", "warning");
-      }
-
-      const now = getNowStamp();
-      const newOrder = {
-        id: `PH-${Date.now()}`,
-        serviceName: service.name,
-        category: service.category,
-        appointmentText: action.payload.appointmentText,
-        appointmentShort: action.payload.appointmentShort,
-        dateKey: action.payload.dateKey,
-        address: action.payload.address,
-        serviceLocation: action.payload.serviceLocation ?? null,
-        customerName: state.auth.currentUser.name,
-        providerId: provider.id,
-        providerName: provider.name,
-        providerTitle: provider.title,
-        amount: service.price + 15,
-        baseAmount: service.price,
-        serviceFee: 15,
-        contactName: action.payload.contactName?.trim() || state.auth.currentUser.name,
-        contactPhone: action.payload.contactPhone?.trim() || state.auth.currentUser.phone,
-        remark: action.payload.remark?.trim() || "",
-        status: "待支付",
-        createdAt: now,
-        paidAt: null,
-        assignedAt: null,
-        startedAt: null,
-        completedAt: null,
-        cancelledAt: null,
-        refundStatus: "未申请",
-        complaintStatus: "无投诉",
-        cancellationReason: "",
-        refundReason: "",
-        complaintContent: "",
-        rating: 0,
-        review: ""
-      };
-
-      return appendToast(
-        {
-          ...state,
-          bookingDraft: {
-            ...state.bookingDraft,
-            selectedServiceId: service.id,
-            providerMode: action.payload.providerMode ?? state.bookingDraft.providerMode,
-            selectedProviderId: provider.id,
-            appointmentText: action.payload.appointmentText,
-            dateKey: action.payload.dateKey,
-            address: action.payload.address,
-            serviceLocation: action.payload.serviceLocation ?? state.bookingDraft.serviceLocation,
-            contactName: action.payload.contactName?.trim() || state.bookingDraft.contactName,
-            contactPhone: action.payload.contactPhone?.trim() || state.bookingDraft.contactPhone,
-            remark: action.payload.remark
-          },
-          orders: [newOrder, ...state.orders]
-        },
-        "订单已创建，请尽快完成支付。",
-        "success"
-      );
+    case "SERVER_SNAPSHOT": {
+      const data = action.payload;
+      const providers = data.providers.map((p) => ({ ...initialState.providers.find((item) => item.id === p.id), ...p }));
+      const mine = providers.find((p) => p.id === data.currentProviderId);
+      return { ...state, orders: data.orders, serviceCatalog: data.serviceCatalog,
+        providers, providerConsole: { currentProviderId: data.currentProviderId, online: mine?.online ?? false } };
     }
-
-    case "PAY_ORDER": {
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!target || target.status !== "待支付") {
-        return appendToast(state, "当前订单无需重复支付。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "待派单",
-                  paidAt: getNowStamp()
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 支付成功，已进入待派单队列。`,
-        "success"
-      );
-    }
-
-    case "ASSIGN_ORDER": {
-      const provider = state.providers.find((item) => item.id === action.providerId);
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!provider || !target || target.status !== "待派单") {
-        return appendToast(state, "当前订单无法执行派单。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "已派单",
-                  providerId: provider.id,
-                  providerName: provider.name,
-                  providerTitle: provider.title,
-                  assignedAt: getNowStamp()
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 已派单给 ${provider.name}。`,
-        "success"
-      );
-    }
-
-    case "MANUAL_ASSIGN_ORDER": {
-      const provider = state.providers.find((item) => item.id === action.providerId);
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!provider || !target || target.status !== "待派单") {
-        return appendToast(state, "手动派单失败，当前订单状态不允许操作。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "已派单",
-                  providerId: provider.id,
-                  providerName: provider.name,
-                  providerTitle: provider.title,
-                  assignedAt: getNowStamp()
-                }
-              : order
-          )
-        },
-        `已手动将订单 ${action.orderId} 指派给 ${provider.name}。`,
-        "success"
-      );
-    }
-
-    case "ACCEPT_ORDER": {
-      const currentProviderId = state.providerConsole.currentProviderId;
-      const provider = state.providers.find((item) => item.id === currentProviderId);
-      const target = state.orders.find((order) => order.id === action.orderId);
-
-      if (!state.providerConsole.online) {
-        return appendToast(state, "当前接单状态为离线，请先打开接单开关。", "warning");
-      }
-
-      if (!provider || !target || !["待派单", "已派单"].includes(target.status)) {
-        return appendToast(state, "当前任务无法接单。", "warning");
-      }
-
-      if (target.status === "已派单" && target.providerId !== currentProviderId) {
-        return appendToast(state, "该任务已派发给其他服务人员，当前账号不能接单。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          providers: state.providers.map((item) =>
-            item.id === currentProviderId ? { ...item, workStatus: "待上门" } : item
-          ),
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  providerId: currentProviderId,
-                  providerName: provider.name,
-                  providerTitle: provider.title,
-                  status: "已接单",
-                  assignedAt: order.assignedAt || getNowStamp()
-                }
-              : order
-          )
-        },
-        `${provider.name} 已接单，任务进入待上门状态。`,
-        "success"
-      );
-    }
-
-    case "START_SERVICE": {
-      const currentProviderId = state.providerConsole.currentProviderId;
-      const target = state.orders.find((order) => order.id === action.orderId);
-
-      if (!target || !["已接单", "已派单"].includes(target.status)) {
-        return appendToast(state, "当前任务还不能开始服务。", "warning");
-      }
-
-      if (target.providerId !== currentProviderId) {
-        return appendToast(state, "只能开始当前服务人员名下的任务。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          providers: state.providers.map((item) =>
-            item.id === currentProviderId ? { ...item, workStatus: "服务中" } : item
-          ),
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "服务中",
-                  startedAt: order.startedAt || getNowStamp()
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 已开始服务。`,
-        "success"
-      );
-    }
-
-    case "COMPLETE_ORDER": {
-      const currentProviderId = state.providerConsole.currentProviderId;
-      const target = state.orders.find((order) => order.id === action.orderId);
-
-      if (!target || !["已接单", "服务中"].includes(target.status)) {
-        return appendToast(state, "当前任务还不能完工。", "warning");
-      }
-
-      if (target.providerId !== currentProviderId) {
-        return appendToast(state, "只能完结当前服务人员名下的任务。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          providers: state.providers.map((item) =>
-            item.id === currentProviderId ? { ...item, workStatus: "空闲" } : item
-          ),
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "已完成",
-                  completedAt: getNowStamp(),
-                  startedAt: order.startedAt || getNowStamp()
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 已完工，等待用户评价。`,
-        "success"
-      );
-    }
-
-    case "SUBMIT_REVIEW": {
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!target || !["已完成", "已评价"].includes(target.status)) {
-        return appendToast(state, "当前订单暂时不能评价。", "warning");
-      }
-
-      if (!action.rating || !action.review?.trim()) {
-        return appendToast(state, "请填写评分和评价内容后再提交。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "已评价",
-                  rating: action.rating,
-                  review: action.review.trim()
-                }
-              : order
-          )
-        },
-        "评价提交成功，订单已闭环完成。",
-        "success"
-      );
-    }
-
-    case "CANCEL_ORDER": {
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!target || !["待支付", "待派单", "已派单"].includes(target.status)) {
-        return appendToast(state, "当前订单状态不允许取消。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  status: "已取消",
-                  cancelledAt: getNowStamp(),
-                  cancellationReason: action.reason?.trim() || "用户主动取消"
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 已取消。`,
-        "success"
-      );
-    }
-
-    case "RESCHEDULE_ORDER": {
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!target || ["已完成", "已评价", "已取消"].includes(target.status)) {
-        return appendToast(state, "当前订单不能改约。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  appointmentText: action.appointmentText,
-                  dateKey: action.dateKey,
-                  appointmentShort: "已改约"
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 改约成功。`,
-        "success"
-      );
-    }
-
-    case "REQUEST_REFUND": {
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!target || ["待支付", "已取消"].includes(target.status)) {
-        return appendToast(state, "当前订单不能申请退款。", "warning");
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  refundStatus: "处理中",
-                  refundReason: action.reason?.trim() || "用户申请退款"
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 的退款申请已提交。`,
-        "success"
-      );
-    }
-
-    case "SUBMIT_COMPLAINT": {
-      const target = state.orders.find((order) => order.id === action.orderId);
-      if (!target) {
-        return state;
-      }
-
-      return appendToast(
-        {
-          ...state,
-          orders: state.orders.map((order) =>
-            order.id === action.orderId
-              ? {
-                  ...order,
-                  complaintStatus: "处理中",
-                  complaintContent: action.content?.trim() || "服务投诉"
-                }
-              : order
-          )
-        },
-        `订单 ${action.orderId} 的投诉已提交。`,
-        "success"
-      );
-    }
-
-    case "SWITCH_PROVIDER": {
-      const provider = state.providers.find((item) => item.id === action.providerId);
-      if (!provider) {
-        return state;
-      }
-
-      return appendToast(
-        {
-          ...state,
-          providerConsole: {
-            ...state.providerConsole,
-            currentProviderId: provider.id
-          }
-        },
-        `当前已切换到 ${provider.name} 的工作台。`,
-        "info"
-      );
-    }
-
-    case "RESTOCK_ITEM": {
-      const targetItem = state.inventoryItems.find((item) => item.id === action.itemId);
-      if (!targetItem) {
-        return state;
-      }
-
-      return appendToast(
-        {
-          ...state,
-          inventoryItems: state.inventoryItems.map((item) =>
-            item.id === action.itemId
-              ? {
-                  ...item,
-                  stock: item.stock + 20,
-                  status: item.stock + 20 > item.safetyStock ? "充足" : "预警"
-                }
-              : item
-          ),
-          inventoryLogs: [
-            {
-              id: `log-${Date.now()}`,
-              itemId: targetItem.id,
-              itemName: targetItem.name,
-              type: "入库",
-              quantity: 20,
-              operator: "James Wilson",
-              createdAt: getNowStamp()
-            },
-            ...state.inventoryLogs
-          ]
-        },
-        "库存补货完成，已同步更新库存状态。",
-        "success"
-      );
-    }
-
-    case "TOGGLE_PROVIDER_ONLINE": {
-      const online = !state.providerConsole.online;
-      return appendToast(
-        {
-          ...state,
-          providerConsole: {
-            ...state.providerConsole,
-            online
-          }
-        },
-        online ? "已开启接单状态。" : "已切换为暂停接单状态。",
-        online ? "success" : "info"
-      );
-    }
-
-    case "RESET_STATE":
-      return initialState;
-
+    case "AUTH_READY": return { ...state, auth: { ...state.auth, ready: true } };
+    case "CLEAR_ORDERS": return { ...state, orders: [] };
     case "LOGIN":
       {
         const incomingUser = action.payload.user || action.payload.currentUser || action.payload;
-        const profileOverride = state.userProfiles[incomingUser.phone] || {};
+        const profileOverride = {};
         const currentUser = mergeCurrentUser(incomingUser, profileOverride);
         const nextRole = currentUser.role || "customer";
       return appendToast(
@@ -1015,89 +349,17 @@ function reducer(state, action) {
           ...state,
           auth: {
             ...state.auth,
-            isLoggedIn: true,
+            isLoggedIn: true, ready: true,
             currentUser
-          }
+          }, orders: []
         },
         `登录成功，已进入${nextRole === "customer" ? "消费者端" : nextRole === "provider" ? "员工端" : "管理端"}。`,
         "success"
       );
       }
 
-    case "UPDATE_PROFILE": {
-      const currentUser = state.auth.currentUser;
-      const nextName = action.payload.name?.trim() || currentUser.name;
-      const nextPhone = action.payload.phone?.trim() || currentUser.phone;
-      const nextAvatar = action.payload.avatar || currentUser.avatar;
-      const nextUser = {
-        ...currentUser,
-        name: nextName,
-        phone: nextPhone,
-        avatar: nextAvatar
-      };
-      const nextUserProfiles = { ...state.userProfiles };
-      const currentProfile = nextUserProfiles[currentUser.phone] || {};
-
-      if (currentUser.phone !== nextPhone) {
-        delete nextUserProfiles[currentUser.phone];
-      }
-
-      nextUserProfiles[nextPhone] = {
-        ...currentProfile,
-        name: nextName,
-        avatar: nextAvatar
-      };
-
-      const nextOrders = state.orders.map((order) => {
-        const nextOrder = { ...order };
-
-        if (currentUser.role === "customer" && order.customerName === currentUser.name) {
-          nextOrder.customerName = nextName;
-        }
-
-        if (currentUser.role === "provider" && order.providerName === currentUser.name) {
-          nextOrder.providerName = nextName;
-        }
-
-        if (order.contactName === currentUser.name) {
-          nextOrder.contactName = nextName;
-        }
-
-        if (order.contactPhone === currentUser.phone) {
-          nextOrder.contactPhone = nextPhone;
-        }
-
-        return nextOrder;
-      });
-
-      const nextProviders =
-        currentUser.role === "provider"
-          ? state.providers.map((provider) =>
-              provider.name === currentUser.name ? { ...provider, name: nextName, image: nextAvatar } : provider
-            )
-          : state.providers;
-
-      return appendToast(
-        {
-          ...state,
-          auth: {
-            ...state.auth,
-            currentUser: nextUser
-          },
-          userProfiles: nextUserProfiles,
-          bookingDraft: {
-            ...state.bookingDraft,
-            contactName: state.bookingDraft.contactName === currentUser.name ? nextName : state.bookingDraft.contactName,
-            contactPhone:
-              state.bookingDraft.contactPhone === currentUser.phone ? nextPhone : state.bookingDraft.contactPhone
-          },
-          providers: nextProviders,
-          orders: nextOrders
-        },
-        "个人资料已更新。",
-        "success"
-      );
-    }
+    case "UPDATE_PROFILE":
+      return appendToast({ ...state, auth: { ...state.auth, currentUser: { ...state.auth.currentUser, ...action.payload } } }, "个人资料已更新。", "success");
 
     case "LOGOUT":
       return appendToast(
@@ -1105,9 +367,9 @@ function reducer(state, action) {
           ...state,
           auth: {
             ...state.auth,
-            isLoggedIn: false,
+            isLoggedIn: false, ready: true,
             currentUser: roleProfiles.customer
-          }
+          }, orders: []
         },
         "您已退出登录。",
         "info"
@@ -1119,16 +381,70 @@ function reducer(state, action) {
 }
 
 export function AppStateProvider({ children }) {
-  const [state, dispatch] = useReducer(reducer, undefined, loadState);
+  const [state, rawDispatch] = useReducer(reducer, undefined, loadState);
+  const refreshSequence = useRef(0);
+  const pending = useRef(new Set());
+  const providerOnline = state.providerConsole.online;
+  const refresh = useCallback(async () => {
+    const token = session.get();
+    const sequence = ++refreshSequence.current;
+    if (!token) return;
+    const data = await platformApi.snapshot();
+    if (session.get() === token && sequence === refreshSequence.current) rawDispatch({ type: "SERVER_SNAPSHOT", payload: data });
+  }, []);
+  const dispatch = useCallback((action) => {
+    const operations = { PAY_ORDER: "pay", ASSIGN_ORDER: "assign", MANUAL_ASSIGN_ORDER: "assign", ACCEPT_ORDER: "accept", START_SERVICE: "start", COMPLETE_ORDER: "complete", SUBMIT_REVIEW: "review", CANCEL_ORDER: "cancel", RESCHEDULE_ORDER: "reschedule", REQUEST_REFUND: "refund", SUBMIT_COMPLAINT: "complaint" };
+    if (action.type === "LOGOUT") {
+      authApi.logout().catch(() => {});
+      session.clear(); ++refreshSequence.current;
+      rawDispatch(action); return;
+    }
+    if (action.type === "RESTOCK_ITEM" || action.type === "SWITCH_PROVIDER" || action.type === "RESET_STATE") {
+      rawDispatch({ type: "PUSH_TOAST", payload: { message: "此功能尚未开放。", tone: "warning" } }); return;
+    }
+    if (action.type !== "CREATE_ORDER" && action.type !== "TOGGLE_PROVIDER_ONLINE" && !operations[action.type]) { rawDispatch(action); return; }
+    const key = action.orderId || action.type;
+    if (pending.current.has(key)) return Promise.resolve(false);
+    pending.current.add(key);
+    const token = session.get();
+    return (async () => {
+      try {
+        if (action.type === "CREATE_ORDER") await platformApi.create(action.payload);
+        else if (action.type === "TOGGLE_PROVIDER_ONLINE") await platformApi.online(!providerOnline);
+        else await platformApi.action(action.orderId, operations[action.type], action);
+        if (session.get() !== token) return false;
+        await refresh();
+        rawDispatch({ type: "PUSH_TOAST", payload: { message: action.type === "PAY_ORDER" ? "模拟支付成功，未发生真实扣款。" : "操作成功，数据已保存到服务器。", tone: "success" } });
+        return true;
+      } catch (error) {
+        if (session.get() !== token) return false;
+        if (error.status === 401) { session.clear(); rawDispatch({ type: "LOGOUT" }); }
+        rawDispatch({ type: "PUSH_TOAST", payload: { message: error.message || "服务不可用，请稍后重试。", tone: "warning" } });
+        // Refresh stale data after a state conflict; never apply a local optimistic write.
+        if (error.status === 409) await refresh().catch(() => {});
+        return false;
+      } finally { pending.current.delete(key); }
+    })();
+  }, [providerOnline, refresh]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-  }, [state]);
-
-  const value = useMemo(() => ({ state, dispatch }), [state]);
-
+    let cancelled = false;
+    if (session.get()) authApi.me().then((user) => { if (!cancelled) rawDispatch({ type: "LOGIN", payload: { user } }); }).catch(() => { if (!cancelled) session.clear(); }).finally(() => { if (!cancelled) rawDispatch({ type: "AUTH_READY" }); });
+    return () => { cancelled = true; };
+  }, []);
+  useEffect(() => {
+    if (!state.auth.isLoggedIn) return;
+    let cancelled = false;
+    const load = () => refresh().catch((error) => {
+      if (cancelled) return;
+      rawDispatch({ type: "CLEAR_ORDERS" });
+      if (error.status === 401) { session.clear(); rawDispatch({ type: "LOGOUT" }); }
+    });
+    load();
+    const timer = window.setInterval(load, 5000);
+    return () => { cancelled = true; ++refreshSequence.current; window.clearInterval(timer); };
+  }, [state.auth.isLoggedIn, state.auth.currentUser.id, refresh]);
+  const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
 }
 

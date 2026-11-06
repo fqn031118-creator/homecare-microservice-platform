@@ -4,7 +4,7 @@ import { AdminShell } from "./admin-shared";
 
 export function AdminPage() {
   const { state, dispatch } = useAppState();
-  const paidOrders = state.orders.filter((order) => order.status !== "待支付");
+  const paidOrders = state.orders.filter((order) => Boolean(order.paidAt));
   const pendingOrders = state.orders.filter((order) => order.status === "待派单");
   const inProgressOrders = state.orders.filter((order) => ["已派单", "已接单", "服务中"].includes(order.status));
   const completedOrders = state.orders.filter((order) => ["已完成", "已评价"].includes(order.status));
@@ -21,7 +21,7 @@ export function AdminPage() {
       extra: "同步中"
     },
     {
-      label: "月度营收",
+      label: "模拟支付总额",
       value: `¥${paidOrders.reduce((sum, order) => sum + order.amount, 0).toFixed(2)}`,
       extra: "动态"
     }
@@ -109,7 +109,7 @@ export function AdminPage() {
                 </div>
                 <div className="pointer-events-none mt-2 w-48 rounded-lg bg-white p-2 opacity-0 shadow-xl transition-opacity group-hover:opacity-100">
                   <p className="text-xs font-semibold">{state.orders[0]?.serviceName ?? "标准保洁"}</p>
-                  <p className="text-[10px] text-outline">服务商: {state.orders[0]?.providerName ?? "Sarah Lee"}</p>
+                  <p className="text-[10px] text-outline">服务商: {state.orders[0]?.providerName ?? "待分配"}</p>
                   <p className="text-[10px] font-semibold text-primary">{state.orders[0]?.status ?? "进行中"}</p>
                 </div>
               </div>
@@ -157,15 +157,15 @@ export function AdminPage() {
             </div>
             <div className="space-y-md">
               <div className="flex items-center justify-between">
-                <span className="text-label-md opacity-80">API 吞吐量</span>
-                <span className="text-label-md font-black">99.98%</span>
+                <span className="text-label-md opacity-80">API 监控指标</span>
+                <span className="text-label-md font-black">未采集</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-white/10">
                 <div className="h-full w-[99%] rounded-full bg-secondary-fixed shadow-[0_0_8px_rgba(78,222,163,0.5)]" />
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-label-md opacity-80">服务商响应延迟</span>
-                <span className="text-label-md font-black">42ms</span>
+                <span className="text-label-md font-black">未采集</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-white/10">
                 <div className="h-full w-[15%] rounded-full bg-primary-fixed-dim" />
@@ -176,13 +176,13 @@ export function AdminPage() {
           <div className="overflow-hidden rounded-xl border border-outline-variant bg-surface shadow-sm">
             <div className="flex items-center justify-between border-b border-outline-variant bg-surface-container-low px-md py-sm">
               <h2 className="text-headline-md font-semibold">预警中心</h2>
-              <span className="rounded-full bg-error px-2 py-0.5 text-[10px] font-black text-on-error">4 条紧急</span>
+              <span className="rounded-full bg-error px-2 py-0.5 text-[10px] font-black text-on-error">订单提醒</span>
             </div>
             <div className="divide-y divide-outline-variant">
               {[
                 ["warning", "待派单订单", `当前仍有 ${pendingOrders.length} 条订单尚未完成派单。`],
-                ["payments", "投诉升级", "订单 #4492 需要人工介入调解退款。"],
-                ["info", "系统更新", "V2.4 调度算法已成功部署至生产环境。"]
+                ["payments", "售后申请", `当前有 ${state.orders.filter((o) => o.refundStatus === "处理中" || o.complaintStatus === "处理中").length} 条售后待处理。`],
+                ["info", "派单规则", "按在线状态与空闲状态人工派单，尚未启用自动调度算法。"]
               ].map(([icon, title, text]) => (
                 <div key={title} className="cursor-pointer p-md transition-colors hover:bg-surface-container-low">
                   <div className="flex gap-sm">
@@ -234,12 +234,13 @@ export function AdminPage() {
             <button
               className="w-full rounded-lg border border-outline-variant py-3 text-label-md font-semibold text-primary transition-colors hover:bg-surface-container"
               onClick={() => {
-                if (pendingOrders[0]) {
-                  dispatch({ type: "ASSIGN_ORDER", orderId: pendingOrders[0].id, providerId: "provider-1" });
+                const provider = state.providers.find((p) => p.available && p.online && p.workStatus === "空闲");
+                if (pendingOrders[0] && provider) {
+                  dispatch({ type: "ASSIGN_ORDER", orderId: pendingOrders[0].id, providerId: provider.id });
                 }
               }}
             >
-              为首条待派单订单自动派单
+              为首条订单分配空闲人员
             </button>
           </div>
         </div>

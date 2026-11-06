@@ -9,10 +9,6 @@ echo "开始构建并启动单机部署环境..."
 cd "${PROJECT_ROOT}/deploy"
 docker compose up -d --build
 
-echo "启动完成。"
-echo "前端登录页: http://服务器IP/login"
-echo "前端首页: http://服务器IP/"
-echo "管理端首页: http://服务器IP/admin"
-echo "网关端口: 8080"
-echo "MySQL 端口: 3306"
-echo "Redis 端口: 6379"
+echo "容器已启动；请检查 docker compose ps 和日志确认就绪。"
+echo "前端: http://服务器IP/login"
+echo "核心API通过同源 /api 访问；数据库不对外暴露。"
